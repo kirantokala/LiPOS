@@ -1,0 +1,43 @@
+<section>
+    <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" style="width:250px;min-width:250px;max-width:250px;">
+	  <md-toolbar style="height:76px;">
+	<div class="md-toolbar-tools"
+		style="height: 76px; color: white; background-color: #757575;">
+		<img style="display: inline-block;width:50px;height:auto;" src="images/profile.png"/>
+		<div style="display:inline-block;width:150px;padding-left:20px;">
+			<h4>{{user.userName}} <!-- ({{user.role.roleName}}) --></h4>
+			<h5 ng-show="store.storeName" ng-click="openSideNavPanel()">
+				{{store.storeName}}</h5>
+		</div>
+		<div style="display:inline-block;padding-left:10px;">
+			<ng-md-icon icon="mode_edit" class="my-icon iconStyle"
+				ng-click="changePassword();openSideNavPanel()"></ng-md-icon>
+		</div>
+	</div>
+	</md-toolbar>
+	  <md-list>
+	      <md-item ng-repeat="item in navMenu" ng-if="store.storeName && (item.roles.indexOf(user.role.roleId) > -1)">
+	        <a href="#{{item.link}}" ng-click="openSideNavPanel()">
+	          <md-item-content md-ink-ripple layout="row" layout-align="start center">
+	            <div class="inset">
+	              <ng-md-icon icon="{{item.icon}}"></ng-md-icon>
+	            </div>
+	            <div class="inset">{{item.title}}
+	            </div>
+	          </md-item-content>
+	        </a>
+	      </md-item>
+	      <md-item ng-repeat="item in vendor" ng-if="item.roles.indexOf(user.role.roleId) > -1">
+	        <a href="#{{item.link}}" ng-click="openSideNavPanel()">
+	          <md-item-content md-ink-ripple layout="row" layout-align="start center">
+	            <div class="inset">
+	              <ng-md-icon icon="{{item.icon}}"></ng-md-icon>
+	            </div>
+	            <div class="inset">{{item.title}}
+	            </div>
+	          </md-item-content>
+	        </a>
+	      </md-item>
+     </md-list>
+    </md-sidenav>
+</section>

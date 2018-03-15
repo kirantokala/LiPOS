@@ -1,0 +1,44 @@
+<md-dialog class="dialogStyle">
+      <form ng-cloak>
+		<md-toolbar>
+			<div class="md-toolbar-tools">
+				<i class="fa fa-share iconStyle" style="position:absolute;right:0px;" ng-click="answer()"></i>
+				<span>{{MATERIAL_ADD.title}}</span>
+			</div>
+		</md-toolbar>		
+		
+		<md-dialog-content class="md-no-momentum" style="padding:20px;">
+			  
+			  <span style="color:red;">{{resMsg}}</span>
+		
+			  <table style="width:100%;" >
+			  	<tr>
+			  		<td>{{MATERIAL_ADD.mat_name}} <span style="color:red;">*</span></td>
+			  		<td><input ng-model="materialName" class="form-control"></td>
+			  	</tr>
+			  	<tr>
+			  		<td>{{MATERIAL_ADD.mat_category}} <span style="color:red;">*</span></td>
+			  		<td><select class="form-control" ng-model="materialCategory" ng-options="materialCategory.materialCategoryName for materialCategory in details.materialCategories">
+                        		<option value="">{{MATERIAL_ADD.sel_mat_category}}</option>
+                        	</select></td>
+			  	</tr>
+			  	<tr>
+			  		<td>{{MATERIAL_ADD.mat_type}} <span style="color:red;">*</span></td>			  		
+			  		<td><select class="form-control" ng-model="materialType" ng-options="materialType.materialTypeName for materialType in details.materialTypes track by materialType.materialTypeId">
+                        		<option value="">{{MATERIAL_ADD.sel_mat_type}}</option>
+                        	</select></td>
+			  	</tr>
+			  	<tr>
+			  		<td>{{MATERIAL_ADD.quan_type}} <span style="color:red;">*</span></td>
+			  		<td><select class="form-control" ng-model="quantityType" ng-options="quantityType.quantityTypeName for quantityType in details.quantityTypes">
+                         		<option value="">{{MATERIAL_ADD.sel_quan_type}}</option>
+                         	</select></td>
+			  	</tr>
+			  	<tr>
+			  		<td>{{MATERIAL_ADD.pack_cost}}</td>
+			  		<td><input ng-model="packCost" class="form-control"></td>
+			  	</tr>
+			  </table>
+		</md-dialog-content>
+	</form>
+</md-dialog>

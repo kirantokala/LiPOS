@@ -1,0 +1,41 @@
+<md-dialog class="dialogStyle">
+	<form ng-cloak>
+		<md-toolbar>
+			<div class="md-toolbar-tools">
+				<h2>{{ITEM_DET.title}}</h2>
+			</div>
+		</md-toolbar>
+	
+		<md-dialog-content style="padding:20px;">
+			 <div>	  	
+			 	<h4>{{ITEM_DET.items}}</h4>
+		 		<table style="width:100%" class="table table-bordered">
+		 			<tr>
+		 				<th>{{ITEM_DET.name}}</th>
+		 				<th>{{ITEM_DET.quantity}}</th>
+		 				<th>{{ITEM_DET.parcel}}</th>
+		 			</tr>
+				 	<tr ng-repeat="item in order.orderedItems">
+						<td>{{item.item.itemName}}</td>
+						<td>{{item.quantity}}</td>
+						<td>{{item.parcelCount}}</td>
+					</tr>
+		 		</table>
+			 </div>
+			 <br>
+			 <div ng-if="order.paymentTypes.length > 0">	  	
+			 	<h4>{{ITEM_DET.payments}}</h4>
+		 		<table style="width:100%" class="table table-bordered">
+		 			<tr>
+		 				<th>{{ITEM_DET.name}}</th>
+		 				<th>{{ITEM_DET.amount}}</th>
+		 			</tr>
+				 	<tr ng-repeat="paymentType in order.paymentTypes">
+						<td>{{paymentType.paymentTypeName}}</td>
+						<td>{{paymentType.amount}}</td>
+					</tr>
+		 		</table>
+			 </div>
+		</md-dialog-content>
+	</form>
+</md-dialog>
