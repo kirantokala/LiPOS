@@ -1,0 +1,175 @@
+<div ng-controller="PurchaseController">
+	<div class="row" style="text-align: center;" ng-show="user.role.roleId!=2">
+		<md-radio-group ng-model="ownerType" ng-change="filterWithDate()">
+		<md-radio-button style="display:inline-block;margin-right:15px;"
+			value="0">All</md-radio-button> <md-radio-button
+			style="display:inline-block" value={{user.userId}}>You</md-radio-button>
+		</md-radio-group>
+	</div>
+	<div class="row" style="text-align: center; margin-bottom: 10px;">
+		<div class="col-sm-12">
+			<div ng-include="'templates/include/date_ui.html'"></div>
+		</div>
+	</div>
+	<div class="row" style="margin-bottom: 10px;">
+		<div class="col-sm-12" style="text-align: center;">
+			<div>
+				<div class="statusCircle" style='background-color: #8E44AD'>
+					<div>
+						<span>{{UI_DEBITS.debit}}</span><br> <span>{{
+							totalDebitAmount | roundup }}</span>
+					</div>
+				</div>
+
+				<div class="statusCircle" style='background-color: #ea781a'>
+					<div>
+						<span>{{UI_DEBITS.bills}}</span><br> <span>{{
+							materialOrders.length }}</span>
+					</div>
+				</div>
+
+				<div class="statusCircle" style='background-color: #cc0000'
+					ng-repeat="paymentType in paymentTypes"
+					ng-if="paymentType.amount>0">
+					<div>
+						<span>{{ paymentType.paymentTypeName }}</span><br> <span>{{
+							paymentType.amount }}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="cardStyle">
+				<div class="cardHeader">
+					<a align='center'>{{UI_DEBITS.orders.title}}</a>
+				</div>
+				<div class="cardBody">
+					<div class="cardBodyMain">
+						<div ng-if="materialOrders.length == 0"
+							style='text-align: center; padding: 10px;'>
+							<img src="images/expenses.jpg" class="makeCenter noMatter"/></div>
+						<div ng-if="materialOrders.length > 0">
+							<table
+								class="table table-bordered table-condensed table-striped table-hover"
+								style="width: 100%;">
+								<tr>
+									<th ng-click="sort('id')">{{UI_DEBITS.orders.id}} <span
+										class="glyphicon sort-icon" ng-show="sortKey=='id'"
+										ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+									<th ng-click="sort('date')">{{UI_DEBITS.orders.date}} <span
+										class="glyphicon sort-icon" ng-show="sortKey=='date'"
+										ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+									<th ng-click="sort('user')">{{UI_DEBITS.orders.user}} <span
+										class="glyphicon sort-icon" ng-show="sortKey=='user'"
+										ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+									<th ng-click="sort('amount')">{{UI_DEBITS.orders.amount}}
+										<span class="glyphicon sort-icon" ng-show="sortKey=='amount'"
+										ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+									</th>
+									<!-- <th ng-click="sort('bill')">bill
+										<span class="glyphicon sort-icon" ng-show="sortKey=='bill'"
+										ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+									</th> -->
+								</tr>
+								<tr
+									ng-repeat="order in materialOrders | orderBy:sortKey:reverse"
+									ng-click="openOrder($event,order)">
+									<td>{{order.orderId}}</td>
+									<td>{{dateOnly(order.orderDate)|date:'yy-MM-dd'}}</td>
+									<td>{{order.user.userName}}</td>
+									<td>{{order.paymentAmount | roundup}}</td><!-- 
+									<td><img style="width:100px;height:auto" src="{{order.paymentBill}}"/></td> -->
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="cardStyle">
+				<div class="cardHeader">
+					<a align='center'>{{UI_DEBITS.categories}}</a>
+				</div>
+				<div class="cardBody">
+
+					<div style="position: relative;">
+						<input type="text" id="q3" ng-model="query" placeholder="Search"
+							class="form-control" click-outside="closeThis('q3')" /> <a
+							ng-show="query!=''" class="search-icon" style="padding-left:10px;padding-right:10px;" ng-click="query=''">
+							<i class="fa fa-times" id="myimage"></i>
+						</a>
+					</div>
+					<div class="cardBodyMain">
+						<div ng-if="purchase.matCategories.length == 0"
+							style='text-align: center; padding: 10px;'>
+							<img src="images/no_cat_purchase.png" class="makeCenter noMatter"/></div>
+						<div ng-if="purchase.matCategories.length > 0">
+							<md-list class="md-dense" flex> <md-list-item
+								ng-repeat="orderMatCategory in purchase.matCategories | filter : matcategoryname">
+							<div class="row" style="width: 100%; padding: 5px;">
+								<div style="float: right">
+									<span align="right">{{ orderMatCategory.totalAmount }}</span>
+								</div>
+								<div style="display: inline-block; vertical-align: top;">
+									<div class="itemCircle"></div>
+								</div>
+								<div
+									style="display: inline-block; margin-left: 15px; vertical-align: top;">
+									<span>{{ orderMatCategory.category.materialCategoryName
+										}}</span><br> <span style="color: grey;">X {{
+										orderMatCategory.quantity }}</span>
+								</div>
+							</div>
+							<md-divider></md-divider> </md-list-item> </md-list>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<div class="cardStyle">
+				<div class="cardHeader">
+					<a align='center'>{{UI_DEBITS.materials}}</a>
+				</div>
+				<div class="cardBody">
+					<div style="position: relative;">
+						<input type="text" id="q4" ng-model="query1" placeholder="Search"
+							class="form-control" click-outside="closeThis('q4')" /> <a
+							ng-show="query1!=''" class="search-icon" style="padding-left:10px;padding-right:10px;" ng-click="query1=''">
+							<i class="fa fa-times" id="myimage"></i>
+						</a>
+					</div>
+					<div class="cardBodyMain">
+						<div ng-if="purchase.materials.length == 0"
+							style='text-align: center; padding: 10px;'>
+							<img src="images/no_cat_purchase.png" class="makeCenter noMatter"/></div>
+						<div ng-if="purchase.materials.length > 0">
+							<md-list class="md-dense" style="width:100%;" flex> <md-list-item
+								ng-repeat="orderMaterial in purchase.materials | filter : matname">
+							<div class="row" style="width: 100%; padding: 5px;">
+								<div style="float: right">
+									<span align="right">{{ orderMaterial.cost }}</span>
+								</div>
+								<div style="display: inline-block; vertical-align: top;">
+									<div class="itemCircle"></div>
+								</div>
+								<div
+									style="display: inline-block; margin-left: 15px; vertical-align: top;">
+									<span>{{ orderMaterial.material.materialName }}</span><br>
+									<span style="color: grey;">X {{ orderMaterial.quantity
+										}}</span>
+								</div>
+							</div>
+							<md-divider></md-divider> </md-list-item></md-list>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

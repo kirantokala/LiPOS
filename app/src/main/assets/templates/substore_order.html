@@ -1,0 +1,56 @@
+<div ng-controller="SubstoreOrderController">
+	<div class="row" style="text-align: center;margin-bottom:10px;">
+		<div class="col-sm-12">
+			<div ng-include="'templates/include/date_ui.html'"></div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="cardStyle">
+				<div class="cardHeader">
+					<a align='center'>{{UI_SUBSTORE_ORDERS.orders.title}}</a>
+				</div>
+				<div class="cardBody">
+					<div class="cardBodyMain">
+						<div ng-if="substoreOrders.length == 0"
+							style='text-align: center; padding: 10px;'><img src="images/no_cat_sales.jpg" class="makeCenter noMatter"/></div>
+						<div ng-if="substoreOrders.length > 0">
+							<table
+								class="table table-bordered table-condensed table-striped table-hover"
+								style="width: 100%;">
+								<tr>
+									<th ng-click="sort('id')">{{UI_SUBSTORE_ORDERS.orders.id}} <span
+										class="glyphicon sort-icon" ng-show="sortKey=='id'"
+										ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+									<th ng-click="sort('date')">{{UI_SUBSTORE_ORDERS.orders.date}} <span
+										class="glyphicon sort-icon" ng-show="sortKey=='date'"
+										ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+									<th ng-click="sort('store')">{{UI_SUBSTORE_ORDERS.orders.store}} <span
+										class="glyphicon sort-icon" ng-show="sortKey=='store'"
+										ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+									<th ng-click="sort('amount')">{{UI_SUBSTORE_ORDERS.orders.amount}}
+										<span class="glyphicon sort-icon" ng-show="sortKey=='amount'"
+										ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+									</th>
+									<th ng-click="sort('status')">{{UI_SUBSTORE_ORDERS.orders.status}}
+										<span class="glyphicon sort-icon" ng-show="sortKey=='status'"
+										ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+									</th>
+								</tr>
+								<tr
+									ng-repeat="order in substoreOrders | orderBy:sortKey:reverse| filter: search"
+									ng-click="openOrder($event,order)">
+									<td>{{order.orderId}}</td>
+									<td>{{dateOnly(order.orderDate) | date:'yy-MM-dd'}}</td>
+									<td>{{order.store.storeName}}</td>
+									<td>{{order.totalAmount | roundup}}</td>
+									<td>{{order.status.name}}</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,101 @@
+<div ng-controller="MaterialController">
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="cardStyle">
+				<div class="cardHeader">
+					<i class="fa fa-plus iconStyle"
+						style="float: right;" ng-if="user.role.roleId!=7"
+						ng-click="openAddMaterialDialog($event)"></i> <a align='center'>{{UI_MATERIAL.materials}}</a>
+				</div>
+				<div class="cardBody">
+					<div style="position: relative;">
+						<input type="text" id="query" ng-model="query"
+							placeholder="Search" class="form-control"
+							click-outside="closeThis('query')" /> <a ng-show="query!=''"
+							class="search-icon" style="padding-left:10px;padding-right:10px;" ng-click="query=''"> <i
+							class="fa fa-times" id="myimage"></i>
+						</a>
+					</div>
+					<div class="cardBodyMain">
+						<table
+							class="table table-bordered table-condensed table-striped table-hover">
+							<tr>
+								<th ng-click="sort('materialId')">{{UI_MATERIAL.id}} <span
+									class="glyphicon sort-icon" ng-show="sortKey=='materialId'"
+									ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+								<th ng-click="sort('materialName')">{{UI_MATERIAL.name}} <span
+									class="glyphicon sort-icon" ng-show="sortKey=='materialName'"
+									ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+								<th ng-click="sort('category')">{{UI_MATERIAL.category}} <span
+									class="glyphicon sort-icon" ng-show="sortKey=='category'"
+									ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+								<th ng-click="sort('quantityType')">{{UI_MATERIAL.quan_type}}
+									<span class="glyphicon sort-icon"
+									ng-show="sortKey=='quantityType'"
+									ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+								</th>
+								<th ng-click="sort('pack_cost')">{{UI_MATERIAL.cost}} <span
+									class="glyphicon sort-icon" ng-show="sortKey=='pack_cost'"
+									ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+							</tr>
+							<tr
+								ng-repeat="material in materials | orderBy:sortKey:reverse| filter: search as filtered"
+								ng-click="addToMaterialOrder(material)">
+								<td>{{material.materialId}}</td>
+								<td>{{material.materialName}}</td>
+								<td>{{material.materialCategory.materialCategoryName}}</td>
+								<td>{{material.quantityType.quantityTypeName}}</td>
+								<td>{{material.packCost}}</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<div class="cardStyle">
+				<div class="cardHeader">
+					<i ng-if="orderedMaterials.length > 0"
+						class="fa fa-share iconStyle"
+						style="float: right;"
+						ng-click="openPaymentInfoDialog($event)"></i>
+						<i ng-if="orderedMaterials.length > 0"
+						class="fa fa-times iconStyle"
+						style="float: left;"
+						ng-click="clearMaterialOrder()"></i> <a align='center'>{{UI_MATERIAL.order}}
+						({{UI_MATERIAL.total}} : {{paymentAmount | roundup}})</a>
+				</div>
+				<div class="cardBody">
+					<div class="cardBodyMain" style="height:385px;position:relative;">
+						<div ng-if="orderedMaterials.length == 0"
+							style='text-align: center; padding: 10px;'><img class="makeCenter noMatter" src="images/no_mat_order.jpg"/></div>
+						<div ng-if="orderedMaterials.length > 0">
+							<table
+								class="table table-bordered table-condensed table-striped table-hover">
+								<tr>
+									<th>{{UI_MATERIAL.id}}</th>
+									<th>{{UI_MATERIAL.name}}</th>
+									<th style="text-align: center;">{{UI_MATERIAL.quantity}}</th>
+									<th>{{UI_MATERIAL.cost}}</th>
+								</tr>
+								<tr
+									ng-repeat="orderMaterial in orderedMaterials|filter:query1"
+									ng-click="openMaterialOptionDialog($event,orderMaterial,$index)">
+									<td>{{orderMaterial.material.materialId}}</td>
+									<td>{{orderMaterial.material.materialName}}</td>
+
+									<td>
+										<div style="width: 100%; text-align: center;">
+											{{orderMaterial.quantity}}
+										</div>
+									</td>
+									<td>{{orderMaterial.cost}}</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

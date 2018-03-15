@@ -1,0 +1,9 @@
+<div ng-controller="StoreController" style="text-align: center;">
+	<br> <br> <br>
+	<div>
+		<div ng-repeat="store in user.storeList">
+			<md-button type="submit" class="md-raised md-primary"
+				style="min-width:250px;" ng-click="selectStore(store)">{{store.storeName}}</md-button>
+		</div>
+	</div>
+</div>

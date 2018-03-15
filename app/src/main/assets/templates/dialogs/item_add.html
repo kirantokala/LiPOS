@@ -1,0 +1,36 @@
+<md-dialog class="dialogStyle">
+      <form ng-cloak>
+		<md-toolbar>
+			<div class="md-toolbar-tools">
+				<i class="fa fa-share iconStyle" style="position:absolute;right:0px;" ng-click="answer()"></i>
+				<h2>{{ITEM_ADD.title}}</h2>
+			</div>
+		</md-toolbar>		
+		
+		<md-dialog-content class="md-no-momentum" style="padding:20px;">
+			  
+			  <span style="color:red;">{{resMsg}}</span>
+		
+			  <table style="width:100%;" >
+			  	<tr>
+			  		<td>{{ITEM_ADD.id}} <span style="color:red;">*</span></td>
+			  		<td><input ng-model="itemId" class="form-control"></td>
+			  	</tr>
+			  	<tr>
+			  		<td>{{ITEM_ADD.name}} <span style="color:red;">*</span></td>
+			  		<td><input ng-model="itemName" class="form-control"></td>
+			  	</tr>
+			  	<tr>
+			  		<td>{{ITEM_ADD.category}} <span style="color:red;">*</span></td>
+			  		<td><select class="form-control" ng-model="itemCategory" ng-options="itemCategory.subcategoryName for itemCategory in details.itemCategories">
+                        		<option value="">Select Category</option>
+                        	</select></td>
+			  	</tr>
+			  	<tr>
+			  		<td>{{ITEM_ADD.price}} <span style="color:red;">*</span></td>
+			  		<td><input ng-model="price" class="form-control"></td>
+			  	</tr>
+			  </table>
+		</md-dialog-content>
+	</form>
+</md-dialog>

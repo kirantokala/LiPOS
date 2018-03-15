@@ -1,0 +1,29 @@
+<div ng-controller="KitchenController">
+	<!-- <div class="row" style="text-align: center; margin-bottom: 10px;">
+		<select class="form-control" ng-model="category"
+			ng-options="category.subcategoryName for category in categories track by category.subcategoryId"
+			ng-change="getPendingOrders()"
+			style="width: 200px; display: inline-block;">
+			<option value="">All</option>
+		</select>
+	</div> -->
+	<div class="row" style="margin-bottom: 10px;">
+		<div class="col-sm-12">
+			<div style="border:1px solid #D3D3D3;height:400px;border-radius:5px;padding:5px;">
+				<div ng-repeat="order in pendingOrders" style="display:inline-block;">
+					<div class="statusCircle"
+						style='background-color: {{colors[($parent.$index)%6]}};cursor:pointer;'
+						ng-repeat="orderItem in order.orderedItems" ng-show="orderItem.status.id==1" ng-dblclick="preparedItem(orderItem)">
+						<div>
+							<span>{{orderItem.item.itemName}}</span><br> <span>{{orderItem.quantity}}
+								| {{orderItem.parcelCount}}</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row" style="text-align:center;">
+		<input class="btn" type="button" style="background-color:rgb(3,169,244);color:white;" value="UPDATE" ng-click="updateOrderedItems()"/>
+	</div>
+</div>

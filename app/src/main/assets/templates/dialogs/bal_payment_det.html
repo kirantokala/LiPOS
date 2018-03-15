@@ -1,0 +1,25 @@
+<md-dialog class="dialogStyle">
+	<form ng-cloak>
+		<md-toolbar>
+			<div class="md-toolbar-tools">
+				<h2>{{PAYMENT_DET.title}}</h2>
+			</div>
+		</md-toolbar>
+	
+		<md-dialog-content style="padding:20px;">
+			 <div>	  	
+			 	<h4>{{PAYMENT_DET.payments}}</h4>
+		 		<table style="width:100%" class="table table-bordered">
+		 			<tr>
+		 				<th>{{PAYMENT_DET.name}}</th>
+		 				<th>{{PAYMENT_DET.amount}}</th>
+		 			</tr>
+				 	<tr ng-repeat="paymentType in bsheet.paymentTypes" ng-if="paymentType.amount!=0">
+						<td>{{paymentType.paymentTypeName}}</td>
+						<td>{{paymentType.amount}}</td>
+					</tr>
+		 		</table>
+			 </div>
+		</md-dialog-content>
+	</form>
+</md-dialog>

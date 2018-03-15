@@ -1,0 +1,64 @@
+<div ng-controller="SubstorePaymentController">
+	<div class="row" style="margin-bottom:10px;">
+		<div class="col-sm-12" style="text-align: center;">
+			<div>
+				<div class="statusCircle" style="background-color: {{colors[$index%5]}}"
+					ng-repeat="paymentInfo in paymentInfos">
+					<div>
+						<span>{{ paymentInfo.store.storeName }}</span><br> <span>{{
+							paymentInfo.amount }}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row" style="text-align: center;margin-bottom:10px;">
+		<div class="col-sm-12">
+			<div ng-include="'templates/include/date_ui.html'"></div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="cardStyle">
+				<div class="cardHeader">
+					<i class="fa fa-plus"
+						style="float: right; font-size: 20px; margin-right: 10px; margin-top: 2px;"
+						ng-click="openAddInvestDialog($event)"></i><a align='center'>{{UI_TRANSACTION.info}}</a>
+				</div>
+				<div class="cardBody">
+					<div class="cardBodyMain">
+						<div ng-if="infos.length == 0"
+							style='text-align: center; padding: 10px;'><img src="images/exp.jpg" class="makeCenter noMatter"/></div>
+						<div ng-if="infos.length > 0" style="width:100%;overflow:auto;">
+							<table
+								class="table table-bordered table-condensed table-striped table-hover"
+								style="width: 100%;">
+								<tr>
+									<th ng-click="sort('date')">{{UI_TRANSACTION.date}} <span
+										class="glyphicon sort-icon" ng-show="sortKey=='date'"
+										ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+									<th ng-click="sort('store')">{{UI_TRANSACTION.store}} <span
+										class="glyphicon sort-icon" ng-show="sortKey=='store'"
+										ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+									<th ng-click="sort('receiver')">{{UI_TRANSACTION.receiver}} <span
+										class="glyphicon sort-icon" ng-show="sortKey=='receiver'"
+										ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+									<th ng-click="sort('amount')">{{UI_TRANSACTION.amount}} <span
+										class="glyphicon sort-icon" ng-show="sortKey=='amount'"
+										ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+								</tr>
+								<tr
+									ng-repeat="info in infos | orderBy:sortKey:reverse| filter: search">
+									<td>{{dateOnly(info.date)|date:'yy-MM-dd'}}</td>
+									<td>{{info.store.storeName}}</td>
+									<td>{{info.receiver.userName}}</td>
+									<td ng-class='{green : info.status.id==2, yellow: info.status.id==1}'>{{info.amount | roundup}}</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

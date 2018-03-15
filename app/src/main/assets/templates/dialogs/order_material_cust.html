@@ -1,0 +1,35 @@
+<md-dialog class="dialogStyle">
+      <form ng-cloak>
+		<md-toolbar>
+			<div class="md-toolbar-tools">
+				<div style="position:absolute;right:0px;">
+					<i class="fa fa-trash iconStyle" ng-click="deleteI()"></i>
+					<i class="fa fa-share iconStyle" ng-click="answer()"></i>
+				</div>
+				<h2>{{ORDER_MATERIAL.title}}</h2>
+			</div>
+		</md-toolbar>		
+		
+		<md-dialog-content class="md-no-momentum" style="padding:20px;">
+			  
+			  <span style="color:red;">{{resMsg}}</span>
+		
+			  <table style="width:100%;" >
+			  	<tr>
+			  		<td colspan="2" style="text-align:center;"><h4 style="margin:0;margin-bottom:10px;font-weight:bold;">{{orderMaterial.material.materialId}} : {{orderMaterial.material.materialName}}</h4></td>
+			  	</tr>
+			  	<tr>
+			  		<td>{{ORDER_MATERIAL.quantity}} <span style="color:red;">*</span></td>
+			  		<td>
+			  		<input type="number" id="q1" ng-model="orderMaterial.quantity" class="form-control" style="text-align:center;" click-outside="closeThis('q1')"/>
+					</td>
+			  	</tr>
+			  	<tr>
+			  		<td>{{ORDER_MATERIAL.cost}} <span style="color:red;">*</span></td>
+			  		<td><input type="number" id="q2" ng-model="orderMaterial.cost" class="form-control" style="text-align:center;" click-outside="closeThis('q2')"/>
+						</td>
+			  	</tr>
+			  </table>
+		</md-dialog-content>
+	</form>
+</md-dialog>

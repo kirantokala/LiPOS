@@ -1,0 +1,61 @@
+<md-dialog class="dialogStyle">
+	<form ng-cloak>
+		<md-toolbar>
+			<div class="md-toolbar-tools">
+				<div style="position:absolute;right:0px;" ng-if="user.role.roleId==9">
+					<i class="fa fa-thumbs-up iconStyle" ng-if="order.status.id==1" ng-click="answer(2)"></i>
+					<i class="fa fa-hand-o-right iconStyle" ng-if="order.status.id==2" ng-click="answer(4)"></i>
+				</div>
+				<div style="position:absolute;right:0px;" ng-if="user.userId==order.user.userId">
+					<i class="fa fa-thumbs-up iconStyle" ng-if="order.status.id==1" ng-click="answer(4)"></i>
+				</div>
+				<h2>{{MAT_DET.title}}</h2>
+			</div>
+		</md-toolbar>
+	
+		<md-dialog-content style="padding:20px;">
+			 <div>	  	
+			 	<h4>{{MAT_DET.materials}}</h4>
+		 		<table style="width:100%;" class="table table-bordered">
+		 			<tr>
+		 				<th>{{MAT_DET.name}}</th>
+		 				<th>{{MAT_DET.quantity}}</th>
+		 				<th>{{MAT_DET.cost}}</th>
+		 				<th>{{MAT_DET.delivered_quantity}}</th>
+		 				<th>{{MAT_DET.actual_cost}}</th>
+		 			</tr>
+				 	<tr ng-repeat="material in order.orderedMaterials">
+						<td>{{material.material.materialName}}</td>
+						<td>{{material.quantity}}</td>
+						<td>{{material.cost}}</td>
+						<td><span ng-if="order.status.id==4">{{material.deliveredQuantity}}</span><input class="form-control" style="max-width:100px;" ng-if="order.status.id!=4" type="text" ng-model="material.deliveredQuantity"/></td>
+						<td><span ng-if="order.status.id==4">{{material.actualCost}}</span><input class="form-control" style="max-width:100px;" ng-if="order.status.id!=4" type="text" ng-model="material.actualCost"/></td>
+					</tr>
+		 		</table>
+		 		<table style="width:100%;">
+		 			<tr ng-if="order.status.id!=4">
+		 				<td>Bill </td><td> <input type="file" class="form-control" ng-model="order.paymentBill" accept="image/*" app-filereader /></td>
+		 			</tr>
+		 			<tr>
+		 				<td colspan="2" style="text-align:center;">
+		 					<img src="{{order.paymentBill}}" style="width:200px;height:auto;"/></td>
+		 			</tr>
+		 		</table>
+			 </div>
+			 <!-- <br>
+			 <div ng-if="order.paymentTypes.length > 0">	  	
+			 	<h4>{{MAT_DET.payments}}</h4>
+		 		<table style="width:100%">
+		 			<tr>
+		 				<th>{{MAT_DET.name}}</th>
+		 				<th>{{MAT_DET.amount}}</th>
+		 			</tr>
+				 	<tr ng-repeat="paymentType in order.paymentTypes" ng-if="paymentType.amount!=0">
+						<td>{{paymentType.paymentTypeName}}</td>
+						<td>{{paymentType.amount}}</td>
+					</tr>
+		 		</table>
+			 </div> -->
+		</md-dialog-content>
+	</form>
+</md-dialog>
