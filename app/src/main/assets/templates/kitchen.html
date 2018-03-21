@@ -9,21 +9,27 @@
 	</div> -->
 	<div class="row" style="margin-bottom: 10px;">
 		<div class="col-sm-12">
-			<div style="border:1px solid #D3D3D3;height:400px;border-radius:5px;padding:5px;">
-				<div ng-repeat="order in pendingOrders" style="display:inline-block;">
-					<div class="statusCircle"
-						style='background-color: {{colors[($parent.$index)%6]}};cursor:pointer;'
-						ng-repeat="orderItem in order.orderedItems" ng-show="orderItem.status.id==1" ng-dblclick="preparedItem(orderItem)">
-						<div>
-							<span>{{orderItem.item.itemName}}</span><br> <span>{{orderItem.quantity}}
-								| {{orderItem.parcelCount}}</span>
+			<div style="border:1px solid #D3D3D3;min-height:400px;border-radius:5px;padding:5px;overflow:auto;">
+				
+				<div ng-if="pendingOrders.length == 0"
+							style='text-align: center; padding: 10px;'>
+							<img src="images/no_item_sales.jpg" class="makeCenter noMatter"/></div>
+							
+				<div ng-if="pendingOrders.length != 0" ng-repeat="order in pendingOrders" style="display:inline-block;">
+					<div style='display:inline-block;width:300px;height:100px;cursor:pointer;margin-right:10px;margin-bottom:10px;'
+						ng-repeat="orderItem in order.orderedItems" ng-show="orderItem.status.id==1" ng-click="openConfirmationDialog(event,orderItem,order.orderId);">
+						<div style="width:30%;margin:0;height:100px;display:inline-block;background-image:url(images/lassi.jpg);background-size:contain;">
+						</div>
+						<div style="position:relative;display:inline-block;vertical-align:top;width:68%;margin:0;height:100px;background-color:{{colors[($parent.$index)%6]}};color:white;">
+							<div style="width:100%;padding:10px;">
+								<span style="font-size:16px;font-weight:bold;">{{orderItem.item.itemName}} </span><br> 
+								<span> {{UI_KITCHEN.quan}} : {{orderItem.quantity}} </span> <br>
+								<span> {{UI_KITCHEN.pcl}} : {{orderItem.parcelCount}} </span>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<div class="row" style="text-align:center;">
-		<input class="btn" type="button" style="background-color:rgb(3,169,244);color:white;" value="UPDATE" ng-click="updateOrderedItems()"/>
 	</div>
 </div>

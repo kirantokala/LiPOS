@@ -2,9 +2,9 @@ app.factory('itemService', itemService);
 
 app.factory("addItemService",itemAddService);
 
-app.controller("MenuController", function ($scope, $http, $mdDialog, $rootScope,$cookieStore, itemService, addItemService, commonService, UI_MENU) {
-	$scope.user = $cookieStore.get("user");
-	$scope.store = $cookieStore.get("store");
+app.controller("MenuController", function ($scope, $http, $mdDialog, $rootScope, $cookieStore, itemService, addItemService, commonService, UI_MENU) {
+	$scope.user = $cookieStore.get("user");			// Getting details of the user
+	$scope.store = $cookieStore.get("store");		// Getting details of the store
 	
 	$rootScope.pageTitle = "SALES";
 	
@@ -34,7 +34,7 @@ app.controller("MenuController", function ($scope, $http, $mdDialog, $rootScope,
   	  $scope.itemOrder.user = $scope.user;
     }
     
-    $scope.parcelCost = 5;
+    $scope.parcelCost = $rootScope.CST_COM.parcelCost;
 	
 	$scope.clearOrder();
 	
@@ -42,7 +42,6 @@ app.controller("MenuController", function ($scope, $http, $mdDialog, $rootScope,
 		if(quantity<=0){
 			$scope.itemOrder.orderedItems.splice(index, 1);
 		}
-		
 		$scope.updateTotalAmount();
 	}
 	
@@ -80,7 +79,7 @@ app.controller("MenuController", function ($scope, $http, $mdDialog, $rootScope,
 	            var itemp = {};
 	            itemp.item = item;
 	            itemp.quantity = 1;
-	            if($scope.user.role.roleId==8){
+	            if($scope.user.role.roleId==$rootScope.CST_COM.roles.substore){
 	            	itemp.parcelCount = 1;
 	            }
 	            else{
@@ -97,7 +96,7 @@ app.controller("MenuController", function ($scope, $http, $mdDialog, $rootScope,
     $scope.search = function (row) {
         var query = $scope.query.toLowerCase();
         var subName = $scope.subcategory1.subcategoryName;
-        var res1 = subName=='MENU'?'':subName;
+        var res1 = (subName==UI_MENU.title)?'':subName;
         
         var result;
         
@@ -117,97 +116,6 @@ app.controller("MenuController", function ($scope, $http, $mdDialog, $rootScope,
     	else{
     		$scope.query = $scope.query.substring(0,$scope.query.length-1);
     	}
-    }
-	
-	$scope.openAddItemDialog = function(ev) {
-    	$http.get($rootScope.baseUrl+'action=getAddItemInfo&store_id='+$scope.store.storeId).success(function(data) {
-    		addItemService.setDetails(data.result); 
-            $mdDialog.show({
-              controller: AddController,
-              templateUrl: 'templates/dialogs/item_add.html',
-              parent: angular.element(document.body),
-              targetEvent: ev,
-              clickOutsideToClose:true,
-              fullscreen: $scope.customFullscreen // Only for -xs, -sm breakpoints.
-            })
-            
-            .then(function(answer) {
-            	if((addItemService.getItem()!=null) && (addItemService.getItem()!=undefined))
-            		$scope.items.push(addItemService.getItem());
-            }, function() {
-            });
-    	});
-    };
-    
-    function AddController($scope,$filter,$mdDialog,addItemService,itemService, UI_MENU) {
-		$scope.details = addItemService.getDetails();
-		
-		$scope.ITEM_ADD = UI_MENU.item_add;
-    	
-    	var item = {};
-    	
-  	    $scope.hide = function() {
-  	      $mdDialog.hide();
-  	    };
-
-  	    $scope.cancel = function() {
-  	      $mdDialog.cancel();
-  	    };
-  	    
-  	    $scope.addItem = function(item){
-  			  $http({
-  		        url : $rootScope.baseUrl+'action=addItem&store_id='+itemService.getStoreId(),
-  		        method : "POST",
-  		        data : {data: item},
-  		        headers: {
-  		            'Content-Type': 'application/json'
-  		        }
-  		    }).then(function(response) {
-  		    	if(response.data.status=="success"){
-  			    	commonService.ajsToast(response.data.message);
-  			    	item = response.data.result;
-  		  	    	addItemService.setItem(item);
-  			    	//$scope.items.push(item);
-  		  	    	$mdDialog.hide();
-  		    	}
-  		    	else{
-  			    	$scope.resMsg = response.data.message;
-  		    	}
-  		    }, function(response) {
-  		    });
-  		};
-  	    
-  	    $scope.answer = function() {
-  	    	
-  	    	if(($scope.itemName == null) || ($scope.itemName == "")){
-  	    		$scope.resMsg = "Plz enter Item Name";
-  	    		return;
-  	    	}
-  	    	else if(($scope.itemId == null) || ($scope.itemId == "")){
-  	    		$scope.resMsg = "Plz enter Item Id";
-  	    		return;
-  	    	}
-  	    	else if(($scope.itemCategory == null) || ($scope.itemCategory == "")){
-  	    		$scope.resMsg = "Plz choose Item Category";
-  	    		return;
-  	    	}
-  	    	else if(($scope.price == null) || ($scope.price == "")){
-  	    		$scope.resMsg = "Plz enter price";
-  	    		return;
-  	    	}
-  	    	
-  	    	item.itemStoreId = $scope.itemId;
-  	    	item.itemName = $scope.itemName;
-  	    	item.itemDescription = $scope.itemName;
-  	    	item.subcategory = $scope.itemCategory;
-  	    	item.materialType = $scope.materialType;
-  	    	item.price = $scope.price;
-  	    	$scope.addItem(item);
-  	    };
-  	    
-  	    $scope.cancel = function(){
-  	    	$mdDialog.hide();
-  	    }
     }
     
     $scope.customFullscreen = false;
@@ -242,10 +150,10 @@ app.controller("MenuController", function ($scope, $http, $mdDialog, $rootScope,
         });
     };
     
-    function OrderBillController($scope,$filter, $mdDialog, $cookieStore, itemService, commonService, UI_MENU) {
+    function OrderBillController($scope, $rootScope, $filter, $mdDialog, $cookieStore, itemService, commonService, UI_MENU) {
     	$scope.ORDER_BILL = UI_MENU.order_bill;
     	$scope.orderDate= new Date();
-    	$scope.parcelCost = 5;
+    	$scope.parcelCost = $rootScope.CST_COM.parcelCost;
     	$scope.orderNo = 0;
 	  	$scope.itemOrder = itemService.getItemOrder();
 	    $scope.hide = function() {
@@ -254,24 +162,24 @@ app.controller("MenuController", function ($scope, $http, $mdDialog, $rootScope,
 	    
 	    $scope.printBill = function()
 	    {
-	        $scope.itemOrder.orderId = $scope.orderNo;
-
-            $scope.itemOrder.store = $cookieStore.get("store");
-
-            var currentdate = new Date();
-            var datetime =  currentdate.getDate() + "/"
-                            + (currentdate.getMonth()+1)  + "/"
-                            + currentdate.getFullYear() + "  "
-                            + currentdate.getHours() + ":"
-                            + currentdate.getMinutes() + ":"
-                            + currentdate.getSeconds();
-
-            var billText = "";
-            billText += "<SMALL>Date:"+datetime+"<BR>";
-            billText += "<SMALL>Order no:"+$scope.itemOrder.orderId+"<BR>";
-            billText += "<CENTER><BIG>"+$scope.itemOrder.store.storeName+"<BR>";
-
-            billText += "<CENTER>--------------------------------<BR>";
+	    	/*$scope.itemOrder.orderId = $scope.orderNo;
+	    	
+	    	$scope.itemOrder.store = $cookieStore.get("store");
+	       
+	    	var currentdate = new Date(); 
+	    	var datetime =  currentdate.getDate() + "/"
+	    	                + (currentdate.getMonth()+1)  + "/" 
+	    	                + currentdate.getFullYear() + "  "  
+	    	                + currentdate.getHours() + ":"  
+	    	                + currentdate.getMinutes() + ":" 
+	    	                + currentdate.getSeconds();
+	    	
+	    	var billText = "";
+	    	billText += "<SMALL>Date:"+datetime+"<BR>";
+	    	billText += "<SMALL>Order no:"+$scope.itemOrder.orderId+"<BR>";
+	    	billText += "<CENTER><BIG>"+$scope.itemOrder.store.storeName+"<BR>";
+	    	
+	    	billText += "<CENTER>--------------------------------<BR>";
 	    	
 	    	var item;
 	    	for(var i=0;i<$scope.itemOrder.orderedItems.length;i++){
@@ -298,13 +206,16 @@ app.controller("MenuController", function ($scope, $http, $mdDialog, $rootScope,
 	    	billText += "<CENTER>--------------------------------<BR>";
 	    	billText += "<CENTER><SMALL>THANK YOU. VISIT AGAIN<BR>";
 	    	
-	    	billText += '<CUT>';
+	    	billText += '<CUT>';*/
 	    	
 	    	commonService.andPrint(JSON.stringify($scope.itemOrder));
 	    }
 	    
 	    $scope.itemOrderUp = function(){    
 	    	$scope.itemOrder.direct = 1;
+	    	if($rootScope.user.role.roleId == $rootScope.CST_COM.roles.substore){
+	    		$scope.itemOrder.direct = 0;
+	    	}
 	    	  $http({
 	              url : $rootScope.baseUrl+'action=placeItemOrder',
 	              method : "POST",
@@ -316,7 +227,6 @@ app.controller("MenuController", function ($scope, $http, $mdDialog, $rootScope,
 	        	  if(response.data.status == "success"){
 		        	  commonService.ajsToast(response.data.message);
 		        	  $scope.orderNo = response.data.result;
-			    	  $scope.ordered = true;
 			    	  $mdDialog.hide();
 			    	  $scope.printBill();
 	        	  }
@@ -330,36 +240,17 @@ app.controller("MenuController", function ($scope, $http, $mdDialog, $rootScope,
 	    $scope.cancel = function() {
 	      $mdDialog.cancel();
 	    };
-	    
-	    $scope.ordered = false;
-	    
-	    $scope.orderItems = function() {
-	    	 if(!$scope.ordered){
-	    		 var df = new Date();
-	    		 var h = df.getHours();
-	    	     var mi = df.getMinutes();
-	    	     var s = df.getSeconds();
-	    	      
-	    	     var time = h+":"+mi+":"+s;
-	    	     
-	    	     $scope.itemOrder.orderDate = $filter('date')($scope.orderDate,'yyyy-MM-dd')+" "+time;
-	    	     
-	    		 $scope.itemOrderUp();
-	    	 }
-		};
 
 	    $scope.printBill1 = function() {
-	      if(!$scope.ordered){
-	    	  var df = new Date();
-	    	  var h = df.getHours();
-	    	  var mi = df.getMinutes();
-	    	  var s = df.getSeconds();
-	    	      
-	    	  var time = h+":"+mi+":"+s;
-	    	     
-	    	  $scope.itemOrder.orderDate = $filter('date')($scope.orderDate,'yyyy-MM-dd')+" "+time;
-	    	  $scope.itemOrderUp();
-	      }
+    	  var df = new Date();
+    	  var h = df.getHours();
+    	  var mi = df.getMinutes();
+    	  var s = df.getSeconds();
+    	      
+    	  var time = h+":"+mi+":"+s;
+    	     
+    	  $scope.itemOrder.orderDate = $filter('date')($scope.orderDate,'yyyy-MM-dd')+" "+time;
+    	  $scope.itemOrderUp();
 	    };
     }
     
@@ -380,44 +271,44 @@ app.controller("MenuController", function ($scope, $http, $mdDialog, $rootScope,
         });
     };
       
-    function PaymentSplitController($scope, $mdDialog,itemService, UI_MENU) {
-    		$scope.SPLIT_PAYMENT = UI_MENU.split_payment;
-    	  	$scope.paymentTypes = itemService.getPaymentTypes();
-    	  	$scope.totalAmount = itemService.getTotalAmount();
-    	  	var paymentType;
-    	  	for(var i=0;i<$scope.paymentTypes.length;i++){
-    	  		if($scope.paymentTypes[i].paymentTypeId==1){
-    	  			paymentType = $scope.paymentTypes[i];
-    	  			$scope.paymentTypes[i].amount = $scope.totalAmount;
-    	  		}
-    	  		else{
-    	  			$scope.paymentTypes[i].amount = 0;
-    	  		}
-    	  	}
-    	    $scope.hide = function() {
+    function PaymentSplitController($scope, $rootScope, $mdDialog, itemService, UI_MENU) {
+		$scope.SPLIT_PAYMENT = UI_MENU.split_payment;
+	  	$scope.paymentTypes = itemService.getPaymentTypes();
+	  	$scope.totalAmount = itemService.getTotalAmount();
+	  	var paymentType;
+	  	for(var i=0;i<$scope.paymentTypes.length;i++){
+	  		if($scope.paymentTypes[i].paymentTypeId==1){
+	  			paymentType = $scope.paymentTypes[i];
+	  			$scope.paymentTypes[i].amount = $scope.totalAmount;
+	  		}
+	  		else{
+	  			$scope.paymentTypes[i].amount = 0;
+	  		}
+	  	}
+	    $scope.hide = function() {
+	      $mdDialog.hide();
+	    };
+
+	    $scope.cancel = function() {
+	      $mdDialog.cancel();
+	    };
+
+	    $scope.answer = function() {
+    	  var amo = 0;
+    	  for(var i=0;i<$scope.paymentTypes.length;i++){
+    		  if($rootScope.isStrNull($scope.paymentTypes[i].amount))
+    			  $scope.paymentTypes[i].amount = 0;
+    		  amo += parseInt($scope.paymentTypes[i].amount);
+    	  }
+    	  if(amo!=$scope.totalAmount){
+    		  $scope.errorMsg = "Amount not matching. "+ amo + " != " + $scope.totalAmount;
+	    	  return;
+    	  }
+    	  else{
+    	      itemService.addPaymentTypes($scope.paymentTypes);
     	      $mdDialog.hide();
-    	    };
-
-    	    $scope.cancel = function() {
-    	      $mdDialog.cancel();
-    	    };
-
-    	    $scope.answer = function() {
-    	    	  var amo = 0;
-    	    	  for(var i=0;i<$scope.paymentTypes.length;i++){
-    	    		  if(($scope.paymentTypes[i].amount==null) || ($scope.paymentTypes[i].amount=="") || ($scope.paymentTypes[i].amount==undefined))
-    	    			  $scope.paymentTypes[i].amount = 0;
-    	    		  amo += parseInt($scope.paymentTypes[i].amount);
-    	    	  }
-    	    	  if(amo!=$scope.totalAmount){
-    	    		  $scope.errorMsg = "Amount not matching. "+ amo + " != " + $scope.totalAmount;
-        	    	  return;
-    	    	  }
-    	    	  else{
-		    	      itemService.addPaymentTypes($scope.paymentTypes);
-		    	      $mdDialog.hide();
-    	    	  }
-    	    };
+    	  }
+	    };
     }    
     
     $scope.openItemOptionDialog = function(ev,orderItem,index) {
@@ -437,41 +328,49 @@ app.controller("MenuController", function ($scope, $http, $mdDialog, $rootScope,
         });
     };
       
-    function ItemOptionController($scope, $mdDialog,itemService, UI_MENU) {
-    		$scope.ORDER_ITEM = UI_MENU.order_item;
-    		$scope.orderItem1 = itemService.getOrderItem();
-    	    $scope.hide = function() {
-    	      $mdDialog.hide();
-    	    };
+    function ItemOptionController($scope, $rootScope, $mdDialog, itemService, UI_MENU) {
+		$scope.ORDER_ITEM = UI_MENU.order_item;
+		$scope.orderItem1 = itemService.getOrderItem();
+		
+		$scope.user = $rootScope.user;
+		
+		$scope.CST_COM = $rootScope.CST_COM;
+		
+	    $scope.hide = function() {
+	      $mdDialog.hide();
+	    };
 
-    	    $scope.cancel = function() {
-    	      $mdDialog.cancel();
-    	    };
-    	    
-    	    $scope.deleteI = function(){
-    	    	var orderItem = $scope.orderItem1;
-    	    	orderItem.quantity = 0;
-    	    	orderItem.parcelCount = 0;
-    	    	itemService.setOrderItem(orderItem);
-	    	    $mdDialog.hide();
-    	    }
+	    $scope.cancel = function() {
+	      $mdDialog.cancel();
+	    };
+	    
+	    $scope.deleteI = function(){
+	    	var orderItem = $scope.orderItem1;
+	    	orderItem.quantity = 0;
+	    	orderItem.parcelCount = 0;
+	    	itemService.setOrderItem(orderItem);
+    	    $mdDialog.hide();
+	    }
 
-    	    $scope.answer = function() {
-    	    	  var orderItem = $scope.orderItem1;
-    	    	  if(parseInt(orderItem.quantity) < parseInt(orderItem.parcelCount)){
-    	    		  $scope.resMsg = "Parcel Count cannot be greater than Quantity";
-    	    		  return;
-    	    	  }
-    	    	  else if((parseInt(orderItem.quantity) <=0) || (orderItem.quantity == undefined)){
-    	    		  $scope.resMsg = "Quantity Cannot be <=0";
-    	    		  return;
-    	    	  }
-    	    	  else if(orderItem.parcelCount == undefined){
-    	    		  $scope.resMsg = "ParcelCount must be >=0";
-    	    		  return;
-    	    	  }
-	    	      itemService.setOrderItem($scope.orderItem1);
-	    	      $mdDialog.hide();
-    	    };
+	    $scope.answer = function() {
+	    	  var orderItem = $scope.orderItem1;
+	    	  if(parseInt(orderItem.quantity) < parseInt(orderItem.parcelCount)){
+	    		  $scope.resMsg = "Parcel Count cannot be greater than Quantity";
+	    		  return;
+	    	  }
+	    	  else if((parseInt(orderItem.quantity) <=0) || (orderItem.quantity == undefined)){
+	    		  $scope.resMsg = "Quantity Cannot be <=0";
+	    		  return;
+	    	  }
+	    	  else if(orderItem.parcelCount == undefined){
+	    		  $scope.resMsg = "ParcelCount must be >=0";
+	    		  return;
+	    	  }
+	    	  if($scope.user.role.roleId == $rootScope.CST_COM.roles.substore){
+	    		  $scope.orderItem1.parcelCount = orderItem.quantity;
+	    	  }
+		      itemService.setOrderItem($scope.orderItem1);
+		      $mdDialog.hide();
+	    };
     }
 });

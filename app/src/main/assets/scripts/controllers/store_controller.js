@@ -11,14 +11,14 @@ app.controller('StoreController', function ($scope, $rootScope, $location, commo
     	$cookieStore.put("store", store);
 
     	$rootScope.store = $cookieStore.get("store");
-    	if($scope.user.role.roleId == 1){
+    	if($scope.user.role.roleId == $rootScope.CST_COM.roles.owner){
     		$location.path('/sales');
     	}
-    	else if($scope.user.role.roleId == 5){
+    	else if($scope.user.role.roleId == $rootScope.CST_COM.roles.treasurer){
     		$location.path('/dashboard');
     	}
-    	else if($scope.user.role.roleId == 3){
-    		$location.path('/kitchen');
+    	else if($scope.user.role.roleId == $rootScope.CST_COM.roles.kitchen){
+    		$location.path('/category');
     	}
     	else{
         	$location.path('/menu');

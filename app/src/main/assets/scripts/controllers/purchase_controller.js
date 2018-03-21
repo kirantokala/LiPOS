@@ -7,6 +7,9 @@ app.controller("PurchaseController", function ($scope, $http, $filter, $mdDialog
 	$scope.query = "";
 	$scope.query1 = "";
 	
+	$scope.subcategory1 = {};
+	$scope.subcategory1.subcategoryName = "ITEMS";
+	
 	$scope.UI_DEBITS = UI_DEBITS;
 	
 	$scope.ownerType = $scope.user.userId;
@@ -217,6 +220,22 @@ app.controller("PurchaseController", function ($scope, $http, $filter, $mdDialog
 			  $rootScope.loading = false;
 		});
 	}
+	
+	$scope.search = function (row) {
+        var query = $scope.query1.toLowerCase();
+        var subName = $scope.subcategory1.subcategoryName;
+        var res1 = (subName=="ITEMS")?'':subName;
+        
+        var result;
+        
+        if(query != ""){
+        	result = (row.material.materialName.toLowerCase().indexOf(query || '') !== -1);
+        }
+        else{
+        	result = (row.material.materialCategory.materialCategoryName.indexOf(res1)!==-1);
+        }
+        return result;
+    };
 	
 	$scope.openOrder = function(ev,order) {
 		singleObjService.setObj(order);        	

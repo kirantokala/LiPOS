@@ -167,7 +167,7 @@ app.controller("MaterialController", function ($scope, $http, $rootScope, $mdDia
     	});
     };
     
-    function AddController($scope,$filter,$mdDialog,addMaterialService, UI_MATERIAL) {
+    function AddController($scope, $filter, $mdDialog, addMaterialService, UI_MATERIAL) {
     	$scope.MATERIAL_ADD = UI_MATERIAL.material_add;
 		$scope.details = addMaterialService.getDetails();
 		
@@ -240,7 +240,7 @@ app.controller("MaterialController", function ($scope, $http, $rootScope, $mdDia
   	    }
     }
     
-    function PaymentInfoController($scope,$filter,$mdDialog,materialService,commonService,$cookieStore,$location, UI_MATERIAL) {
+    function PaymentInfoController($scope, $filter, $mdDialog, materialService, commonService, $cookieStore, $location, UI_MATERIAL) {
   	  	
     	$scope.MATERIAL_ORDER = UI_MATERIAL.material_order;
     	
@@ -258,7 +258,7 @@ app.controller("MaterialController", function ($scope, $http, $rootScope, $mdDia
   	  	$scope.user = $cookieStore.get("user");
   	  	$scope.store = $cookieStore.get("store");
   	  	
-	  	  $http.get($rootScope.baseUrl+'action=getUserPayment&user_id='+$scope.user.userId+'&store_id='+$scope.store.storeId).success(function(data) {
+	  	$http.get($rootScope.baseUrl+'action=getUserPayment&user_id='+$scope.user.userId+'&store_id='+$scope.store.storeId).success(function(data) {
 	  		$scope.userMoney = data.result;
 	  		if(($rootScope.materialOrder!=undefined) && ($rootScope.materialOrder!={})){
 				for(var i=0;i<$rootScope.materialOrder.paymentTypes.length;i++){
@@ -266,7 +266,7 @@ app.controller("MaterialController", function ($scope, $http, $rootScope, $mdDia
 				}
 				$scope.materialOrder.orderId = $rootScope.materialOrder.orderId;
 			}
-	  	  });
+	  	});
 	  	  
 	  	$http.get($rootScope.baseUrl+'action=getUsers&role_id=9&store_id='+$scope.store.storeId).success(function(data) {
 	  		$scope.vendors = data.result;
@@ -440,17 +440,17 @@ app.controller("MaterialController", function ($scope, $http, $rootScope, $mdDia
 	    	orderMaterial.deliveredQuantity = 0;
 	    	orderMaterial.actualCost = 0;
 	    	materialService.setOrderMaterial(orderMaterial);
-    	    $mdDialog.hide();
+		    $mdDialog.hide();
 	    }
 	    
 	    $scope.answer = function() {
-	    	  var orderMaterial = $scope.orderMaterial;
-	    	  if((orderMaterial.quantity <=0) || (orderMaterial.cost <=0) || (orderMaterial.quantity==undefined) || (orderMaterial.cost==undefined)){
-	    		  $scope.resMsg = "Cost & Quantity Cannot be <=0";
-	    		  return;
-	    	  }
-    	      materialService.setOrderMaterial($scope.orderMaterial);
-    	      $mdDialog.hide();
+    	  var orderMaterial = $scope.orderMaterial;
+    	  if((orderMaterial.quantity <=0) || (orderMaterial.cost <=0) || (orderMaterial.quantity==undefined) || (orderMaterial.cost==undefined)){
+    		  $scope.resMsg = "Cost & Quantity Cannot be <=0";
+    		  return;
+    	  }
+	      materialService.setOrderMaterial($scope.orderMaterial);
+	      $mdDialog.hide();
 	    };
     }
 });

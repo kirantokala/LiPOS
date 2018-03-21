@@ -28,7 +28,7 @@
 					</div>
 					</td>
 			  	</tr>
-			  	<tr>
+			  	<tr ng-if="user.role.roleId!=CST_COM.roles.substore">
 			  		<td>{{ORDER_ITEM.parcel}} <span style="color:red;">*</span></td>
 			  		<td><div style="width:100%;text-align:center;">
 						<span class="iconStyle" ng-click="(orderItem1.parcelCount>0) && (orderItem1.parcelCount = orderItem1.parcelCount-1)"><i class="fa fa-minus" style="padding:2px;border:1px solid black;border-radius:15px;"></i></span>

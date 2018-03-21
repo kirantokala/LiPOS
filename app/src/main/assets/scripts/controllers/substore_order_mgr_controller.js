@@ -236,7 +236,7 @@ app.controller("SubstoreOrderMgrController", function ($scope, $http, $mdDialog,
     	$scope.printBill = function()
 	    {
 	       
-	    	var currentdate = new Date(); 
+	    	/*var currentdate = new Date(); 
 	    	var datetime =  currentdate.getDate() + "/"
 	    	                + (currentdate.getMonth()+1)  + "/" 
 	    	                + currentdate.getFullYear() + "  "  
@@ -268,9 +268,9 @@ app.controller("SubstoreOrderMgrController", function ($scope, $http, $mdDialog,
 	    	
 	    	billText += "<CENTER><SMALL>THANK YOU. VISIT AGAIN<BR>";
 	    	
-	    	billText += '<CUT>';
+	    	billText += '<CUT>';*/
 	    	
-	    	commonService.andPrint(billText);	
+	    	commonService.andPrint(JSON.stringify($scope.order));//billText);	
 	    	
 	    }
     	
@@ -285,10 +285,10 @@ app.controller("SubstoreOrderMgrController", function ($scope, $http, $mdDialog,
 	        }).then(function(response) {
 	        	$scope.order.status=response.data.result;
 	        	commonService.ajsToast(response.data.message);
+	  	    	$mdDialog.hide();
 	        	if(statusId == 4){
 	        		$scope.printBill();
 	        	}
-	  	    	$mdDialog.hide();
 	        }, function(response) {
 	        });
 		}

@@ -1,0 +1,8 @@
+<div ng-controller="CategoryController" style="position:releative;">
+	<div class="makeCenter">
+		<div ng-repeat="category in categories">
+			<md-button type="submit" class="md-raised md-primary"
+				style="min-width:250px;" ng-click="selectCategory(category)">{{category.categoryName}}</md-button>
+		</div>
+	</div>
+</div>

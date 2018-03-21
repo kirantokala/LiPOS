@@ -110,8 +110,8 @@
 							<img src="images/no_cat_purchase.png" class="makeCenter noMatter"/></div>
 						<div ng-if="purchase.matCategories.length > 0">
 							<md-list class="md-dense" flex> <md-list-item
-								ng-repeat="orderMatCategory in purchase.matCategories | filter : matcategoryname">
-							<div class="row" style="width: 100%; padding: 5px;">
+								ng-repeat="orderMatCategory in purchase.matCategories | filter : query">
+							<div class="row" style="width: 100%; padding: 5px;" ng-click="subcategory1.subcategoryName=orderMatCategory.category.materialCategoryName">
 								<div style="float: right">
 									<span align="right">{{ orderMatCategory.totalAmount }}</span>
 								</div>
@@ -150,7 +150,7 @@
 							<img src="images/no_cat_purchase.png" class="makeCenter noMatter"/></div>
 						<div ng-if="purchase.materials.length > 0">
 							<md-list class="md-dense" style="width:100%;" flex> <md-list-item
-								ng-repeat="orderMaterial in purchase.materials | filter : matname">
+								ng-repeat="orderMaterial in purchase.materials | filter : search">
 							<div class="row" style="width: 100%; padding: 5px;">
 								<div style="float: right">
 									<span align="right">{{ orderMaterial.cost }}</span>

@@ -1,5 +1,19 @@
+app.constant('CST_COM',{
+	roles:{
+		owner : 1,
+		manager : 2,
+		kitchen : 3,
+		treasurer : 5,
+		admin : 6,
+		guest : 7,
+		substore : 8,
+		vendor : 9,
+	},
+	parcelCost : 5
+});
+
 app.constant('UI_MENU',{
-	menu : 'MENU',
+	title : 'MENU',
 	cat : 'CATEGORY',
 	order : 'ORDER',
 	total : 'Tot',
@@ -33,10 +47,15 @@ app.constant('UI_MENU',{
 	}
 });
 
-app.constant('UI_PENDING_ORDERS',{
-	title : "ORDERS",
-	name : "Name",
-	date : "Date"
+app.constant('UI_KITCHEN',{
+	quan : "Quan",
+	pcl : "Pcl",
+	item_det:{
+		title : 'CONFIRMATION',
+		name : 'Name',
+		quantity : 'Quantity',
+		parcel : 'Parcel'
+	}
 });
 
 app.constant('UI_MATERIAL',{
@@ -101,6 +120,7 @@ app.constant('UI_CREDITS',{
 		title : 'ORDERS',
 		id : 'Id',
 		date : 'Date',
+		time : 'Time',
 		user : 'User',
 		amount : 'Amount'
 	},

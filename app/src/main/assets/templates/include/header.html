@@ -17,8 +17,9 @@
 					style="margin-left: 10px; vertical-align: middle; display: inline-block; font-size: 12px; padding-left: 5px; padding-right: 5px; background-color: rgb(3, 169, 244); border-radius: 10px; color: white;">{{notificationCount}}</div>
 			</div>
 			<div ng-if="notifications.length==0" class="makeCenter">No
-				notifications</div>
-			<div>
+				notifications
+			</div>
+			<div style="height:165px;overflow:auto;">
 				<div ng-repeat="notification in notifications"
 					ng-click="openStoreOrders()"
 					style="cursor: pointer; font-size:14px; padding: 5px; border-bottom: 1px solid #DCDCDC">
@@ -47,11 +48,20 @@
 
 	</md-button> </md-menu-item>
 		
-		<md-menu-item ng-if="((user.storeList.length>1) && (store.storeName)) || (user.role.roleId==6)"> <md-button
+		<md-menu-item ng-if="((user.storeList.length>1) && (store.storeName)) || (user.role.roleId==CST_COM.roles.admin)"> <md-button
 		ng-click="switchStore()">
 
 	<div layout="row">
 		<p flex>Switch store</p>
+	</div>
+
+	</md-button> </md-menu-item>
+	
+	<md-menu-item ng-if="(user.role.roleId==CST_COM.roles.kitchen)"> <md-button
+		ng-click="switchCategory()">
+
+	<div layout="row">
+		<p flex>Switch category</p>
 	</div>
 
 	</md-button> </md-menu-item>  <md-menu-item> <md-button ng-click="logout()">

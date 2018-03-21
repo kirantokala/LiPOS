@@ -54,7 +54,7 @@
 						<div ng-if="sales.subcategories.length > 0">
 							<md-list class="md-dense" flex> <md-list-item
 								ng-repeat="orderSubcategory in sales.subcategories | filter : query">
-							<div class="row" style="width: 100%; padding: 5px;">
+							<div class="row" style="width: 100%; padding: 5px;" ng-click="subcategory1.subcategoryName=orderSubcategory.subCategory.subcategoryName">
 								<div style="float: right">
 									<span align="right">{{ orderSubcategory.totalAmount }}</span>
 								</div>
@@ -93,7 +93,7 @@
 							<img src="images/no_cat_sales.jpg" class="makeCenter noMatter"/></div>
 						<div ng-if="sales.items.length > 0">
 							<md-list class="md-dense" style="width:100%;" flex> <md-list-item
-								ng-repeat="orderItem in sales.items | filter : query1">
+								ng-repeat="orderItem in sales.items | filter : search">
 							<div class="row" style="width: 100%; padding: 5px;">
 								<div style="float: right">
 									<span align="right">{{
@@ -134,8 +134,11 @@
 									<th ng-click="sort('id')">{{UI_CREDITS.orders.id}} <span
 										class="glyphicon sort-icon" ng-show="sortKey=='id'"
 										ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
-									<th ng-click="sort('date')">{{UI_CREDITS.orders.date}} <span
+									<th ng-if="filterBy !='day' && filterBy != 'today'" ng-click="sort('date')">{{UI_CREDITS.orders.date}} <span
 										class="glyphicon sort-icon" ng-show="sortKey=='date'"
+										ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+									<th ng-if="filterBy =='day' || filterBy == 'today'" ng-click="sort('time')">{{UI_CREDITS.orders.time}} <span
+										class="glyphicon sort-icon" ng-show="sortKey=='time'"
 										ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
 									<th ng-click="sort('user')">{{UI_CREDITS.orders.user}} <span
 										class="glyphicon sort-icon" ng-show="sortKey=='user'"
@@ -146,10 +149,11 @@
 									</th>
 								</tr>
 								<tr
-									ng-repeat="order in itemOrders | orderBy:sortKey:reverse| filter: search"
+									ng-repeat="order in itemOrders | orderBy:sortKey:reverse"
 									ng-click="openOrder($event,order)">
 									<td>{{order.orderId}}</td>
-									<td>{{dateOnly(order.orderDate)|date:'yy-MM-dd'}}</td>
+									<td ng-if="filterBy !='day' && filterBy !='today'">{{dateOnly(order.orderDate)|date:'yy-MM-dd'}}</td>
+									<td ng-if="filterBy =='day' || filterBy == 'today'">{{dateOnly(order.orderDate)|date:'HH:mm'}}</td>
 									<td>{{order.user.userName}}</td>
 									<td>{{order.totalAmount | roundup}}</td>
 								</tr>

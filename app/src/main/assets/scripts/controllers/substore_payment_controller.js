@@ -251,14 +251,14 @@ app.controller("SubstorePaymentController", function ($scope, $http, $cookieStor
         });
     };
     
-    function addController($rootScope, $scope,$mdDialog,singleObjService,commonService, UI_TRANSACTION){
+    function addController($rootScope, $scope, $mdDialog, singleObjService, commonService, UI_TRANSACTION){
     	$scope.ADD_PAYMENT = UI_TRANSACTION.add_payment;
 		var status = {};
 		status.id = 1;
 		$scope.user = $rootScope.user;
 		$scope.store = $rootScope.store;
 		
-		$http.get($rootScope.baseUrl+'action=getUsers&role_id=2&store_id='+$scope.store.storeId).success(function(data) {
+		$http.get($rootScope.baseUrl+'action=getUsers&role_id=1,2&store_id='+$scope.store.storeId).success(function(data) {
 			$scope.receivers = data.result;
 		});
 		

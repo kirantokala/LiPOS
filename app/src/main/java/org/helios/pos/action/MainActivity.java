@@ -5,6 +5,8 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
@@ -24,15 +26,19 @@ import android.widget.Toast;
 
 import org.helios.pos.service.MyService;
 import org.helios.pos.util.DeviceList;
+import org.helios.pos.util.HttpGetRequest;
 import org.helios.pos.util.PrinterCommands;
 import org.helios.pos.util.Utils;
+import org.helios.pos.util.VersionChecker;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
     WebView mWebView;
@@ -40,10 +46,12 @@ public class MainActivity extends AppCompatActivity {
     private String TAG = "Main Activity";
     EditText message;
     Button btnPrint, btnBill;
-
+    String mPrintmsg;
     byte FONT_TYPE;
     private static BluetoothSocket btsocket;
     private static OutputStream outputStream;
+
+    String baseUrl = "http://18.221.170.127:8080/POS/pos?";
 
     @SuppressLint("NewApi")
     @Override
@@ -72,7 +80,28 @@ public class MainActivity extends AppCompatActivity {
 
         mWebView.addJavascriptInterface(new WebViewJavaScriptInterface(this), "ANDROID");
         mWebView.setWebViewClient(new WebViewClient());
-        mWebView.loadUrl("file:///android_asset/index.html");
+
+
+        try {
+            PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+            String version = pInfo.versionName;
+            int verCode = pInfo.versionCode;
+            System.out.println("version Code:"+verCode);
+
+           /* VersionChecker versionChecker = new VersionChecker();
+            String latestVersion = versionChecker.execute().get();*/
+
+            int latVerCode = getLatestVersionCode();
+
+            if(verCode == latVerCode){
+                mWebView.loadUrl("file:///android_asset/index.html");
+            }
+            else {
+                Toast.makeText(getApplicationContext(), "Update the app from playstore", Toast.LENGTH_SHORT).show();
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
 
         //stopService(new Intent(getBaseContext(), MyService.class));
     }
@@ -89,6 +118,31 @@ public class MainActivity extends AppCompatActivity {
             // pass back button action
             super.onBackPressed();
         }
+    }
+
+    public int getLatestVersionCode(){
+        String result = "";
+        String myUrl = baseUrl+"action=getVersionCode";
+
+        HttpGetRequest getRequest = new HttpGetRequest();
+        try {
+            result = getRequest.execute(myUrl).get();
+            System.out.println("Result:"+result);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        Context context = getApplicationContext();
+
+        try {
+            JSONObject jsonObject = new JSONObject(result);
+            return jsonObject.getInt("result");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     private void quickPrinter(String msg) {
@@ -113,18 +167,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void printBill1(String msg) {
         System.out.println("msg:"+msg);
+        mPrintmsg = msg;
         if(btsocket == null){
             Intent BTIntent = new Intent(getApplicationContext(), DeviceList.class);
             this.startActivityForResult(BTIntent, DeviceList.REQUEST_CONNECT_BT);
+
         }
         else{
-            OutputStream opstream = null;
-            try {
-                opstream = btsocket.getOutputStream();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            outputStream = opstream;
 
             //print command
             try {
@@ -138,46 +187,51 @@ public class MainActivity extends AppCompatActivity {
                 outputStream.write(printformat);
 
                 try {
-                    JSONObject data = new JSONObject(msg);
+                    JSONObject data = new JSONObject(mPrintmsg);
                     String dateTime[] = getDateTime();
                     printCustom("Date : "+dateTime[0]+" "+dateTime[1],1,0);
-                    printNewLine();
                     printCustom("Order no :" + data.getString("orderId"),1,0);
                     printNewLine();
                     printCustom(data.getJSONObject("store").getString("storeName"),3,1);
-                    printNewLine();
                     printCustom("--------------------------------",1,1);
-                    printNewLine();
+
                     JSONArray orderItems = data.getJSONArray("orderedItems");
 
                     JSONObject orderItem;
-                    float parcelCost = 5;
+                    int parcelCost = 5;
                     for(int i=0;i<orderItems.length();i++){
+
                         orderItem = orderItems.getJSONObject(i);
-                        printCustom(orderItem.getJSONObject("item").getString("itemName"),1,0);
-                        printNewLine();
+                        String pStr ="";
+                        String itemName = orderItem.getJSONObject("item").getString("itemName");
+                        int orq = orderItem.getInt("quantity");
+                        int price = orderItem.getJSONObject("item").getInt("price");
+                        int quantity = orderItem.getInt("quantity");
+                        int pcount = orderItem.getInt("parcelCount");
+
                         if(orderItem.getInt("parcelCount")>0){
-                            printCustom("(P X " +orderItem.getInt("parcelCount")+" = "+orderItem.getInt("parcelCount")*parcelCost + ") + ",1,2);
+                            pStr ="(P X " +pcount+" = "+pcount*parcelCost + ") + ";
                         }
-                        printCustom("("+ orderItem.getInt("quantity")+" X "+orderItem.getJSONObject("item").getDouble("price")+") = "+(orderItem.getInt("quantity")*orderItem.getJSONObject("item").getDouble("price")+orderItem.getInt("parcelCount")*parcelCost),1,2);
-                        printNewLine();
+
+                        printCustom(itemName,1,0);
+                        printCustom(pStr+"("+ orq+" X "+price+") = "+(quantity*price+pcount*parcelCost),1,2);
+
                     }
-                    printNewLine();
-                    printCustom("Total amount :"+ data.getString("totalAmount"),2,2);
-                    printNewLine();
                     printCustom("--------------------------------",1,1);
-                    printNewLine();
+                    printCustom("Total : "+ data.getString("totalAmount"),3,2);
+                    printCustom("--------------------------------",1,1);
                     JSONArray paymentTypes = data.getJSONArray("paymentTypes");
                     JSONObject paymentType;
                     for(int i=0;i<paymentTypes.length();i++){
                         paymentType = paymentTypes.getJSONObject(i);
                         if(paymentType.getDouble("amount")>0){
-                            printCustom(paymentType.getString("paymentTypeName") + " : " + paymentType.getDouble("amount"),1,0);
-                            printNewLine();
+                            printCustom(paymentType.getString("paymentTypeName") + " : " + paymentType.getInt("amount"),1,0);
                         }
                     }
                     printCustom("--------------------------------",1,1);
                     printCustom("THANK YOU. VISIT AGAIN",1,1);
+                    printNewLine();
+                    printNewLine();
                     printNewLine();
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -197,18 +251,10 @@ public class MainActivity extends AppCompatActivity {
             this.startActivityForResult(BTIntent, DeviceList.REQUEST_CONNECT_BT);
         }
         else{
-            OutputStream opstream = null;
-            try {
-                opstream = btsocket.getOutputStream();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            outputStream = opstream;
-
             //print command
             try {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -397,8 +443,11 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         try {
             btsocket = DeviceList.getSocket();
+
             if(btsocket != null){
-                printText("SASdsdasadasd");
+
+                printBill1(mPrintmsg);
+
             }
 
         } catch (Exception e) {

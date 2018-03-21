@@ -1,0 +1,33 @@
+<md-dialog class="dialogStyle">
+<form ng-cloak>
+	<md-toolbar>
+	<div class="md-toolbar-tools">
+		<div style="position: absolute; right: 0px;">
+			<i class="fa fa-share iconStyle" ng-click="answer()"></i>
+		</div>
+		<h2>{{ITEM_DET.title}}</h2>
+	</div>
+	</md-toolbar>
+
+	<md-dialog-content class="md-no-momentum" style="padding:15px;">
+
+	<div>
+
+		<table style="width: 100%;" class="table table-bordered">
+			<tr>
+				<th>{{ITEM_DET.name}}</th>
+				<td>{{orderItem.item.itemName}}</td>
+			</tr>
+			<tr>
+				<th>{{ITEM_DET.quantity}}</th>
+				<td>{{orderItem.quantity}}</td>
+			</tr>
+			<tr>
+				<th>{{ITEM_DET.parcel}}</th>
+				<td>{{orderItem.parcelCount}}</td>
+			</tr>
+		</table>
+	</div>
+	</md-dialog-content>
+</form>
+</md-dialog>

@@ -1,5 +1,5 @@
 <div class="row" ng-controller="MenuController">
-	<div class="col-sm-2" style="padding-right:0px;text-align:center;">
+	<div class="col-sm-2" style="text-align:center;">
 		<div class="cardStyle">
 			<div class="cardHeader">
 				<a align='center'>{{UI_MENU.cat}}</a>
@@ -20,18 +20,9 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-sm-5" style="padding-right:0px;">
+	<div class="col-sm-5">
 		<div class="cardStyle">
 			<div class="cardHeader">
-				<div style="float:right;display:inline-block;">
-					<i ng-if="[1,5,6,7].indexOf(user.role.roleId) > -1" class="fa fa-plus iconStyle" ng-click="openAddItemDialog($event)"></i>
-				</div><!-- 
-				<div style="float:left;display:inline-block;">
-					<select class="form-control" ng-model="subcategory1" ng-init="subcategory1 = subcategory1 || 'All'" style="background:none;border:none;box-shadow:none;">
-						<option value="All">All</option>
-						<option ng-repeat="category in categories" value="{{category.subcategoryName}}">{{category.subcategoryName}}</option>
-                    </select>
-				</div> -->
 				<a align='center'>{{subcategory1.subcategoryName}}</a>
 			</div>
 			<div class="cardBody">

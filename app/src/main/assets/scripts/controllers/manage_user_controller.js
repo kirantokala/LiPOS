@@ -11,7 +11,7 @@ app.controller("ManageUserController", function ($scope, $http, $mdDialog, $cook
 	$scope.query = "";
 	$scope.query1 = "";
 	
-	$http.get($rootScope.baseUrl+'action=getUsers&store_id='+$scope.store.storeId+"&role_id=0").success(function(data) {
+	$http.get($rootScope.baseUrl+'action=getUsers&store_id='+$scope.store.storeId).success(function(data) {
 		$scope.users = data.result;
 	});
 

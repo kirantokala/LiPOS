@@ -26,8 +26,11 @@ app.config(function($routeProvider) {
     .when("/menu", {
         templateUrl : "templates/menu.html"
     })
-     .when("/store", {
+    .when("/store", {
         templateUrl : "templates/store.html"
+    })
+     .when("/category", {
+        templateUrl : "templates/category.html"
     })
     .when("/material", {
         templateUrl : "templates/material.html"
@@ -91,12 +94,17 @@ app.config(function($routeProvider) {
     })
     .when("/manageUser", {
         templateUrl : "templates/manage_user.html"
+    })
+    .when("/manageMenu", {
+        templateUrl : "templates/manage_menu.html"
     });
 });
 
-app.controller('AppCtrl', function ($scope, $timeout, $mdSidenav, $rootScope, $location, $http, $cookieStore,commonService, LoginService, $interval) {
+app.controller('AppCtrl', function ($scope, $timeout, $mdSidenav, $rootScope, $location, $http, $cookieStore,commonService, LoginService, $interval, CST_COM) {
 	
 	$rootScope.loading = false;
+	
+	$rootScope.CST_COM = CST_COM;
 	
 	$rootScope.user = $cookieStore.get("user");
 	
@@ -222,6 +230,12 @@ app.controller('AppCtrl', function ($scope, $timeout, $mdSidenav, $rootScope, $l
 		      title: 'Manage user',
 		      icon: 'account_circle',
 		      roles: [5]
+		},
+		{
+		      link : '/manageMenu',
+		      title: 'Manage menu',
+		      icon: 'account_circle',
+		      roles: [1,2]
 		}
 	  ];
 	
@@ -250,6 +264,12 @@ app.controller('AppCtrl', function ($scope, $timeout, $mdSidenav, $rootScope, $l
 		$location.path('/store');
 	}
 	
+	$scope.switchCategory = function(){
+		$cookieStore.put("category",undefined);
+		$rootScope.category = {};
+		$location.path('/category');
+	}
+	
 	$scope.openAdminPanel = function(){
 		$location.path('/admin');
 	}
@@ -259,11 +279,27 @@ app.controller('AppCtrl', function ($scope, $timeout, $mdSidenav, $rootScope, $l
 	}
 	
 	$scope.openStoreOrders = function(){
-		$location.path('/substoreOrderMgr');
+		if($scope.user.role.roleId == $rootScope.CST_COM.roles.kitchen){
+			$location.path('/kitchen');
+		}
+		else if($scope.user.role.roleId == $rootScope.CST_COM.roles.manager){
+			$location.path('/substoreOrderMgr');
+		}
 	}
-	  
-	if(($cookieStore.get("user")!=undefined) && ($cookieStore.get("store")!=undefined)){
-		$location.path('/menu');
+	
+	$scope.$watch('$viewContentLoaded', function(){
+		$scope.openPageWhenRefresh();
+	});
+	
+	$scope.openPageWhenRefresh = function(){
+		if(($cookieStore.get("user")!=undefined) && ($cookieStore.get("store")!=undefined)){
+			if($rootScope.user.role.roleId == $rootScope.CST_COM.roles.kitchen){
+				$location.path('/kitchen');
+			}
+			else{
+				$location.path('/menu');
+			}
+		}
 	}
 	
 	$scope.parcelPrice = 5;
@@ -302,6 +338,13 @@ app.controller('AppCtrl', function ($scope, $timeout, $mdSidenav, $rootScope, $l
 	  
 	$rootScope.isObjectEmpty = function(card){
 	   return Object.keys(card).length === 0;
+	}
+	
+	$rootScope.isStrNull = function(str){
+	   if((str==null) || (str=="") || (str==undefined)){
+		   return true;
+	   }
+	   return false;
 	}
 	
 	$rootScope.dateOnly= function(timestamp) {

@@ -10,6 +10,9 @@ app.controller("SaleController", function ($scope, $http, $mdDialog,$cookieStore
 	$scope.query = "";
 	$scope.query1 = "";
 	
+	$scope.subcategory1 = {};
+	$scope.subcategory1.subcategoryName = "ITEMS";
+	
 	$scope.months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 	$scope.days = [31,28,31,30,31,30,31,31,30,31,30,31];
 	
@@ -228,6 +231,22 @@ app.controller("SaleController", function ($scope, $http, $mdDialog,$cookieStore
 			  $rootScope.loading = false;
 		});
 	}
+	
+	$scope.search = function (row) {
+        var query = $scope.query1.toLowerCase();
+        var subName = $scope.subcategory1.subcategoryName;
+        var res1 = (subName=="ITEMS")?'':subName;
+        
+        var result;
+        
+        if(query != ""){
+        	result = (row.item.itemName.toLowerCase().indexOf(query || '') !== -1);
+        }
+        else{
+        	result = (row.item.subcategory.subcategoryName.indexOf(res1)!==-1);
+        }
+        return result;
+    };
 	
 	
 	$scope.openOrder = function(ev,order) {
