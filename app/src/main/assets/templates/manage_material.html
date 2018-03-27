@@ -1,0 +1,96 @@
+<div class="row" ng-controller="ManageMatController">
+	<div class="col-sm-7">
+			<div class="cardStyle">
+				<div class="cardHeader">
+					<i class="fa fa-plus iconStyle"
+						style="float: right;" ng-if="user.role.roleId!=7"
+						ng-click="openAddOrUpdateMaterialDialog($event,'',-1,0)"></i> <a align='center'>{{UI_MATERIAL.materials}}</a>
+				</div>
+				<div class="cardBody">
+					<div style="position: relative;">
+						<input type="text" id="query" ng-model="query"
+							placeholder="Search" class="form-control"
+							click-outside="closeThis('query')" /> <a ng-show="query!=''"
+							class="search-icon" style="padding-left:10px;padding-right:10px;" ng-click="query=''"> <i
+							class="fa fa-times" id="myimage"></i>
+						</a>
+					</div>
+					<div class="cardBodyMain">
+						<table
+							class="table table-bordered table-condensed table-striped table-hover">
+							<tr>
+								<th ng-click="sort('materialId')">{{UI_MATERIAL.id}} <span
+									class="glyphicon sort-icon" ng-show="sortKey=='materialId'"
+									ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+								<th ng-click="sort('materialName')">{{UI_MATERIAL.name}} <span
+									class="glyphicon sort-icon" ng-show="sortKey=='materialName'"
+									ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+								<th ng-click="sort('category')">{{UI_MATERIAL.category}} <span
+									class="glyphicon sort-icon" ng-show="sortKey=='category'"
+									ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+								<th ng-click="sort('quantityType')">{{UI_MATERIAL.quan_type}}
+									<span class="glyphicon sort-icon"
+									ng-show="sortKey=='quantityType'"
+									ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+								</th>
+								<th ng-click="sort('pack_cost')">{{UI_MATERIAL.cost}} <span
+									class="glyphicon sort-icon" ng-show="sortKey=='pack_cost'"
+									ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+							</tr>
+							<tr
+								ng-repeat="material in materials | orderBy:sortKey:reverse| filter: search as filtered"
+								ng-click="openAddOrUpdateMaterialDialog($event,material,$index,1)">
+								<td>{{material.materialId}}</td>
+								<td>{{material.materialName}}</td>
+								<td>{{material.materialCategory.materialCategoryName}}</td>
+								<td>{{material.quantityType.quantityTypeName}}</td>
+								<td>{{material.packCost}}</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	<div class="col-sm-5">
+		<div class="cardStyle">
+			<div class="cardHeader">
+				<div style="float: right; display: inline-block;">
+					<i class="fa fa-plus iconStyle"
+						ng-click="openAddUpdateMatcategoryDialog($event,'',-1,0)"></i>
+				</div>
+				<a align='center'>{{UI_MATERIAL.matcategories}}</a>
+			</div>
+			<div class="cardBody" style="overflow: auto;">
+				<div style="position: relative; width: 100%;">
+					<input type="text" id="query1" ng-model="query1" placeholder="Search"
+						class="form-control"
+						click-outside="closeThis('query1')" /> <a ng-show="query1!=''"
+						class="search-icon"
+						style="padding-left: 10px; padding-right: 10px;"
+						ng-click="query1=''"> <i class="fa fa-times" id="myimage"></i>
+					</a>
+				</div>
+				<div class="cardBodyMain" style="overflow:auto;">
+					<table
+						class="table table-bordered table-condensed table-striped table-hover"
+						style="width: 100%;">
+						<tr>
+							<th ng-click="sort('id')">{{UI_MATERIAL.id}} <span
+								class="glyphicon sort-icon" ng-show="sortKey=='id'"
+								ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+							<th ng-click="sort('name')">{{UI_MATERIAL.name}} <span
+								class="glyphicon sort-icon" ng-show="sortKey=='name'"
+								ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+						</tr>
+						<tr
+							ng-repeat="matcategory in matcategories | orderBy:sortKey:reverse| filter: query1"
+							ng-click="openAddUpdateMatcategoryDialog($event,matcategory,$index,1)">
+							<td>{{matcategory.materialCategoryId}}</td>
+							<td>{{matcategory.materialCategoryName}}</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

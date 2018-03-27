@@ -1,0 +1,62 @@
+<md-dialog class="dialogStyle">
+<form ng-cloak>
+	<md-toolbar>
+	<div class="md-toolbar-tools">
+
+		<div style="position: absolute; right: 0px;">
+			<i ng-if="user.userId!=0" class="fa fa-trash iconStyle"
+				ng-click="deleteI()"></i> <i ng-if="user.userId==0" class="fa fa-share iconStyle"
+				ng-click="answer()"></i>
+		</div>
+		<h2>
+			<span ng-if="user.userId==0">{{USER_ADD.add_user}}</span> <span
+				ng-if="user.userId!=0">{{USER_ADD.edit_user}}</span>
+		</h2>
+	</div>
+	</md-toolbar>
+
+	<md-dialog-content class="md-no-momentum" style="padding:20px;">
+
+	<span style="color: red;">{{resMsg}}</span>
+	<div class="row" style="text-align: center;" ng-show="user.userId==0">
+		<md-radio-group ng-model="userType">
+		<md-radio-button style="display:inline-block;margin-right:15px;"
+			value="existing">{{USER_ADD.existing}}</md-radio-button> <md-radio-button
+			style="display:inline-block" value="new">{{USER_ADD.newu}}</md-radio-button>
+		</md-radio-group>
+	</div>
+	<table style="width: 100%;">
+		<tr ng-show="userType=='new'">
+			<td>{{USER_ADD.name}} <span style="color: red;">*</span></td>
+			<td><input ng-model="user.userName" class="form-control"></td>
+		</tr>
+		<tr ng-show="userType=='new'">
+			<td>{{USER_ADD.role}} <span style="color: red;">*</span></td>
+			<td><select class="form-control" ng-model="user.role"
+				ng-options="role.roleName for role in roles track by role.roleId">
+					<option value="">{{USER_ADD.sel_role}}</option>
+			</select></td>
+		</tr>
+		<tr ng-show="userType=='existing'">
+			<td>{{USER_ADD.user}} <span style="color: red;">*</span></td>
+			<td><select class="form-control" ng-model="user1"
+				ng-options="user.userName for user in users">
+					<option value="">{{USER_ADD.sel_user}}</option>
+			</select></td>
+		</tr>
+		<tr ng-show="userType=='new'">
+			<td>{{USER_ADD.phone}} <span style="color: red;">*</span></td>
+			<td><input ng-model="user.phone" class="form-control"></td>
+		</tr>
+		<tr ng-show="userType=='new'">
+			<td>{{USER_ADD.location}}</td>
+			<td><input ng-model="user.location" class="form-control"></td>
+		</tr>
+		<tr ng-show="userType=='new'">
+			<td>{{USER_ADD.address}}</td>
+			<td><input ng-model="user.address" class="form-control"></td>
+		</tr>
+	</table>
+	</md-dialog-content>
+</form>
+</md-dialog>

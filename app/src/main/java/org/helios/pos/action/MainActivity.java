@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -14,7 +13,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
@@ -24,12 +22,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.helios.pos.service.MyService;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.helios.pos.model.ItemOrder;
+import org.helios.pos.service.SyncService;
+import org.helios.pos.util.DatabaseHandler;
 import org.helios.pos.util.DeviceList;
 import org.helios.pos.util.HttpGetRequest;
 import org.helios.pos.util.PrinterCommands;
 import org.helios.pos.util.Utils;
-import org.helios.pos.util.VersionChecker;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,17 +43,27 @@ import java.util.Calendar;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
+    private static BluetoothSocket btsocket;
+    private static OutputStream outputStream;
     WebView mWebView;
-
-    private String TAG = "Main Activity";
     EditText message;
     Button btnPrint, btnBill;
     String mPrintmsg;
     byte FONT_TYPE;
-    private static BluetoothSocket btsocket;
-    private static OutputStream outputStream;
-
     String baseUrl = "http://18.221.170.127:8080/POS/pos?";
+    private String TAG = "Main Activity";
+
+    public static void resetPrint() {
+        try{
+            outputStream.write(PrinterCommands.ESC_FONT_COLOR_DEFAULT);
+            outputStream.write(PrinterCommands.FS_FONT_ALIGN);
+            outputStream.write(PrinterCommands.ESC_ALIGN_LEFT);
+            outputStream.write(PrinterCommands.ESC_CANCEL_BOLD);
+            outputStream.write(PrinterCommands.LF);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @SuppressLint("NewApi")
     @Override
@@ -63,6 +75,9 @@ public class MainActivity extends AppCompatActivity {
         //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_main);
+
+        stopService();
+        //startService();
 
         mWebView = findViewById(R.id.web_view);
 
@@ -103,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        //stopService(new Intent(getBaseContext(), MyService.class));
+        //stopService(new Intent(getBaseContext(), SyncService.class));
     }
 
     @Override
@@ -118,6 +133,15 @@ public class MainActivity extends AppCompatActivity {
             // pass back button action
             super.onBackPressed();
         }
+    }
+
+    public void startService() {
+        startService(new Intent(getBaseContext(), SyncService.class));
+    }
+
+    // Method to stop the service
+    public void stopService() {
+        stopService(new Intent(getBaseContext(), SyncService.class));
     }
 
     public int getLatestVersionCode(){
@@ -154,15 +178,22 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void setSessionUser1(int userId) {
-        SharedPreferences myprefs = getApplicationContext().getSharedPreferences("user", MODE_PRIVATE);
-        myprefs.edit().putInt("userId", userId).commit();
-        startService(new Intent(getBaseContext(), MyService.class));
-    }
+    private void placeItemOrder(String itemOrderJsonStr){
+        System.out.println("Json Str : " + itemOrderJsonStr);
+        DatabaseHandler db = new DatabaseHandler(this);
 
-    private void setSessionStore1(String storeId) {
-        SharedPreferences myprefs= getApplicationContext().getSharedPreferences("user", MODE_PRIVATE);
-        myprefs.edit().putString("store_id",storeId).commit();
+        ItemOrder itemOrder = new ItemOrder();
+        try{
+            JSONObject jObj = new JSONObject(itemOrderJsonStr);
+
+            Gson gson = new GsonBuilder().create();
+            itemOrder = gson.fromJson(jObj.toString(), ItemOrder.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Log.d("Insert: ", "Inserting ..");
+        db.addItemOrder(itemOrder);
     }
 
     private void printBill1(String msg) {
@@ -171,11 +202,8 @@ public class MainActivity extends AppCompatActivity {
         if(btsocket == null){
             Intent BTIntent = new Intent(getApplicationContext(), DeviceList.class);
             this.startActivityForResult(BTIntent, DeviceList.REQUEST_CONNECT_BT);
-
         }
         else{
-
-            //print command
             try {
                 try {
                     Thread.sleep(1000);
@@ -200,7 +228,6 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject orderItem;
                     int parcelCost = 5;
                     for(int i=0;i<orderItems.length();i++){
-
                         orderItem = orderItems.getJSONObject(i);
                         String pStr ="";
                         String itemName = orderItem.getJSONObject("item").getString("itemName");
@@ -215,7 +242,6 @@ public class MainActivity extends AppCompatActivity {
 
                         printCustom(itemName,1,0);
                         printCustom(pStr+"("+ orq+" X "+price+") = "+(quantity*price+pcount*parcelCost),1,2);
-
                     }
                     printCustom("--------------------------------",1,1);
                     printCustom("Total : "+ data.getString("totalAmount"),3,2);
@@ -360,7 +386,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     //print new line
     private void printNewLine() {
         try {
@@ -369,18 +394,6 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-    }
-
-    public static void resetPrint() {
-        try{
-            outputStream.write(PrinterCommands.ESC_FONT_COLOR_DEFAULT);
-            outputStream.write(PrinterCommands.FS_FONT_ALIGN);
-            outputStream.write(PrinterCommands.ESC_ALIGN_LEFT);
-            outputStream.write(PrinterCommands.ESC_CANCEL_BOLD);
-            outputStream.write(PrinterCommands.LF);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     //print text
@@ -445,11 +458,8 @@ public class MainActivity extends AppCompatActivity {
             btsocket = DeviceList.getSocket();
 
             if(btsocket != null){
-
                 printBill1(mPrintmsg);
-
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -477,13 +487,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @JavascriptInterface
-        public void setSessionUser(String userId) {
-            setSessionUser1(Integer.parseInt(userId));
-        }
-
-        @JavascriptInterface
-        public void setSessionStore(String storeId) {
-            setSessionStore1(storeId);
+        public void placeItemOrderInLocalDB(String itemOrder) {
+            placeItemOrder(itemOrder);
         }
 
         @JavascriptInterface
@@ -491,4 +496,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(context, msg, Toast.LENGTH_SHORT);
         }
     }
+
+
 }

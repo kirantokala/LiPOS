@@ -216,7 +216,7 @@ app.controller("MenuController", function ($scope, $http, $mdDialog, $rootScope,
 	    	if($rootScope.user.role.roleId == $rootScope.CST_COM.roles.substore){
 	    		$scope.itemOrder.direct = 0;
 	    	}
-	    	  $http({
+	    	  /*$http({
 	              url : $rootScope.baseUrl+'action=placeItemOrder',
 	              method : "POST",
 	              data : {data: $scope.itemOrder},
@@ -226,7 +226,7 @@ app.controller("MenuController", function ($scope, $http, $mdDialog, $rootScope,
 	          }).then(function(response) {
 	        	  if(response.data.status == "success"){
 		        	  commonService.ajsToast(response.data.message);
-		        	  $scope.orderNo = response.data.result;
+		        	  $scope.itemOrder.orderId = response.data.result;
 			    	  $mdDialog.hide();
 			    	  $scope.printBill();
 	        	  }
@@ -234,7 +234,13 @@ app.controller("MenuController", function ($scope, $http, $mdDialog, $rootScope,
 	        		  $scope.resMsg = response.data.message;
 	        	  }
 	          }, function(response) {
-	          });
+	          });*/
+            
+            commonService.placeOrder(JSON.stringify($scope.itemOrder));
+            $mdDialog.hide();
+            commonService.ajsToast("Ordered successfully");
+            $scope.itemOrder.orderId = 1;
+            $scope.printBill();
 	    }
 
 	    $scope.cancel = function() {

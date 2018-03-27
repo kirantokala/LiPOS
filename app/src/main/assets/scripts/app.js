@@ -57,7 +57,7 @@ app.config(function($routeProvider) {
         templateUrl : "templates/purchase.html"
     })
     .when("/chPass", {
-        templateUrl : "templates/change_password.html"
+        templateUrl : "templates/edit_profile.html"
     })
     .when("/investment", {
         templateUrl : "templates/investment.html"
@@ -97,6 +97,9 @@ app.config(function($routeProvider) {
     })
     .when("/manageMenu", {
         templateUrl : "templates/manage_menu.html"
+    })
+    .when("/manageMat", {
+        templateUrl : "templates/manage_material.html"
     });
 });
 
@@ -234,6 +237,12 @@ app.controller('AppCtrl', function ($scope, $timeout, $mdSidenav, $rootScope, $l
 		{
 		      link : '/manageMenu',
 		      title: 'Manage menu',
+		      icon: 'account_circle',
+		      roles: [1,2]
+		},
+		{
+		      link : '/manageMat',
+		      title: 'Manage material',
 		      icon: 'account_circle',
 		      roles: [1,2]
 		}

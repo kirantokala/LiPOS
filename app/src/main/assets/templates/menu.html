@@ -52,7 +52,7 @@
 						ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th> -->
 						</tr>
 						<tr
-							ng-repeat="item in items | orderBy:sortKey:reverse| filter: search"
+							ng-repeat="item in items | orderBy:sortKey:reverse| filter: search as filtered"
 							ng-click="addToItemOrder(item)">
 							<td>{{item.itemStoreId}}</td>
 							<td>{{item.itemName}}</td>
@@ -61,6 +61,7 @@
 							<!-- <td>{{item.subcategory.category.categoryName}}</td> -->
 						</tr>
 					</table>
+					<p class="makeCenter" ng-show="query!='' && filtered.length==0">NO MATCHES FOUND</p>
 				</div>
 			</div>
 		</div>

@@ -1,0 +1,26 @@
+<md-dialog class="dialogStyle">
+      <form ng-cloak>
+		<md-toolbar>
+			<div class="md-toolbar-tools">
+				<div style="position:absolute;right:0px;">
+					<i ng-if="matcategory.materialCategoryId!=0" class="fa fa-trash iconStyle" ng-click="deleteI()"></i>
+					<i class="fa fa-share iconStyle" ng-click="answer()"></i>
+				</div>
+				<h2><span ng-if="matcategory.materialCategoryId==0">{{MATCATEGORY_ADD.add_matcat}}</span>
+				<span ng-if="matcategory.materialCategoryId!=0">{{MATCATEGORY_ADD.edit_matcat}}</span></h2>
+			</div>
+		</md-toolbar>		
+		
+		<md-dialog-content class="md-no-momentum" style="padding:20px;">
+			  
+			  <span style="color:red;">{{resMsg}}</span>
+		
+			  <table style="width:100%;" >
+			  	<tr>
+			  		<td>{{MATCATEGORY_ADD.name}} <span style="color:red;">*</span></td>
+			  		<td><input ng-model="matcategory.materialCategoryName" class="form-control"></td>
+			  	</tr>
+			  </table>
+		</md-dialog-content>
+	</form>
+</md-dialog>

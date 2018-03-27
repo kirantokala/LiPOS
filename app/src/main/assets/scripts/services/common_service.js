@@ -46,6 +46,10 @@ app.factory('commonService', function($mdToast) {
     function andToast(msg){
     	 ANDROID.setToast(msg);
     }
+
+    function placeOrder(order){
+        ANDROID.placeItemOrderInLocalDB(order);
+    }
     
     function andPrint(text){
     	//alert(text);
@@ -67,6 +71,7 @@ app.factory('commonService', function($mdToast) {
     	andPrint: andPrint,
     	makeblur: makeblur,
         ajsToast : ajsToast,
+        placeOrder : placeOrder,
         playAudio : playAudio
     };
 });

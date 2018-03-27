@@ -187,7 +187,7 @@ app.controller("MaterialController", function ($scope, $http, $rootScope, $mdDia
   	    
   	    $scope.addMaterial = function(material){
   			  $http({
-  		        url : $rootScope.baseUrl+'action=addMaterial',
+  		        url : $rootScope.baseUrl+'action=addOrUpdateMaterial',
   		        method : "POST",
   		        data : {data: material},
   		        headers: {

@@ -14,7 +14,10 @@ app.constant('CST_COM',{
 
 app.constant('UI_MENU',{
 	title : 'MENU',
-	cat : 'CATEGORY',
+	items : 'ITEMS',
+	subcategories:'SUBCATEGORIES',
+	cat : 'Category',
+	subcat : 'Subcategory',
 	order : 'ORDER',
 	total : 'Tot',
 	id : 'Id',
@@ -26,10 +29,18 @@ app.constant('UI_MENU',{
 	no_order_msg : 'Ordered items of present customer will be displayed here',
 	item_add:{
 		title:'Add item',
+		add_item:'Add item',
+		edit_item:'Edit item',
 		id: 'Item id',
 		name:'Item name',
 		category :'Item category',
 		price:'Price'
+	},
+	subcategory_add:{
+		add_subcat:'Add Subcategory',
+		edit_subcat:'Edit Subcategory',
+		name:'Name',
+		category :'Category'
 	},
 	order_bill:{
 		title:'Confirm Order',
@@ -63,6 +74,8 @@ app.constant('UI_MATERIAL',{
 	total : 'Tot',
 	id : 'Id',
 	name :'Name',
+	materials:'Materials',
+	matcategories:'Categories',
 	category : 'Category',
 	quan_type : 'Quan type',
 	cost : 'Cost',
@@ -71,6 +84,8 @@ app.constant('UI_MATERIAL',{
 	no_order_msg : 'Ordered materials will be displayed here',
 	material_add:{
 		title:'Add Material',
+		add_mat:'Add Material',
+		edit_mat:'Edit Material',
 		mat_name:'Material Name',
 		mat_category:'Material category',
 		mat_type:'Material Type',
@@ -79,6 +94,12 @@ app.constant('UI_MATERIAL',{
 		sel_mat_category:"Select Material category",
 		sel_mat_type:'Select Material type',
 		sel_quan_type:'Select Quan type'
+	},
+	matcategory_add:{
+		add_matcat:'Add Category',
+		edit_matcat:'Edit Category',
+		name:'Name',
+		category :'Category'
 	},
 	order_material:{
 		title:'Order Material',
@@ -335,6 +356,8 @@ app.constant('UI_MANAGE_USER',{
 	user_add:{
 		title:'Add User',
 		existing:'Existing',
+		add_user:'Add User',
+		edit_user:'Delete User',
 		newu:'New',
 		name:'User Name',
 		role:'Role',
@@ -348,6 +371,11 @@ app.constant('UI_MANAGE_USER',{
 });
 
 app.constant('UI_PROFILE',{
+	title:'EDIT PROFILE',
+	name:'User name',
+	phone : 'Mobile',
+	location : 'Location',
+	address : 'Address',
 	change_password:{
 		title:'CHANGE PASSWORD',
 		old_pass:'Old Password',

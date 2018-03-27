@@ -1,12 +1,12 @@
 <div class="row" ng-controller="ManageMenuController">
-	<div class="col-sm-12">
+	<div class="col-sm-7">
 		<div class="cardStyle">
 			<div class="cardHeader">
 				<div style="float: right; display: inline-block;">
 					<i class="fa fa-plus iconStyle"
-						ng-click="openAddUpdateItemDialog($event,'',0)"></i>
+						ng-click="openAddUpdateItemDialog($event,'',-1,0)"></i>
 				</div>
-				<a align='center'>{{UI_MENU.title}}</a>
+				<a align='center'>{{UI_MENU.items}}</a>
 			</div>
 			<div class="cardBody" style="overflow: auto;">
 				<div style="position: relative; width: 100%;">
@@ -32,21 +32,67 @@
 							<th ng-click="sort('itemPrice')">{{UI_MENU.price}} <span
 								class="glyphicon sort-icon" ng-show="sortKey=='itemPrice'"
 								ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
-							<th ng-click="sort('subcategory')">SubCategory <span
+							<th ng-click="sort('subcategory')">{{UI_MENU.subcat}} <span
 								class="glyphicon sort-icon" ng-show="sortKey=='subcategory'"
 								ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
-							<th ng-click="sort('category')">category <span
+							<!-- <th ng-click="sort('category')">category <span
 								class="glyphicon sort-icon" ng-show="sortKey=='category'"
-								ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+								ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th> -->
 						</tr>
 						<tr
 							ng-repeat="item in items | orderBy:sortKey:reverse| filter: search"
-							ng-click="openAddUpdateItemDialog($event,item,1)">
+							ng-click="openAddUpdateItemDialog($event,item,$index,1)">
 							<td>{{item.itemStoreId}}</td>
 							<td>{{item.itemName}}</td>
 							<td>{{item.price}}</td>
 							<td>{{item.subcategory.subcategoryName}}</td>
-							<td>{{item.subcategory.category.categoryName}}</td>
+							<!-- <td>{{item.subcategory.category.categoryName}}</td> -->
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-5">
+		<div class="cardStyle">
+			<div class="cardHeader">
+				<div style="float: right; display: inline-block;">
+					<i class="fa fa-plus iconStyle"
+						ng-click="openAddUpdateSubcategoryDialog($event,'',-1,0)"></i>
+				</div>
+				<a align='center'>{{UI_MENU.subcategories}}</a>
+			</div>
+			<div class="cardBody" style="overflow: auto;">
+				<div style="position: relative; width: 100%;">
+					<input type="text" id="query1" ng-model="query1" placeholder="Search"
+						class="form-control" style="font-size: 17px;"
+						click-outside="closeThis('query1')" /> <a ng-show="query1!=''"
+						class="search-icon"
+						style="padding-left: 10px; padding-right: 10px;"
+						ng-click="query1=''"> <i class="fa fa-times" id="myimage"></i>
+					</a>
+				</div>
+				<div class="cardBodyMain" style="height: 384px;overflow:auto;">
+					<table
+						class="table table-bordered table-condensed table-striped table-hover"
+						style="width: 100%;">
+						<tr>
+							<th ng-click="sort('id')">{{UI_MENU.id}} <span
+								class="glyphicon sort-icon" ng-show="sortKey=='id'"
+								ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+							<th ng-click="sort('name')">{{UI_MENU.name}} <span
+								class="glyphicon sort-icon" ng-show="sortKey=='name'"
+								ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+							<th ng-click="sort('category')">{{UI_MENU.cat}} <span
+								class="glyphicon sort-icon" ng-show="sortKey=='category'"
+								ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
+						</tr>
+						<tr
+							ng-repeat="subcategory in subcategories | orderBy:sortKey:reverse| filter: query1"
+							ng-click="openAddUpdateSubcategoryDialog($event,subcategory,$index,1)">
+							<td>{{subcategory.subcategoryId}}</td>
+							<td>{{subcategory.subcategoryName}}</td>
+							<td>{{subcategory.category.categoryName}}</td>
 						</tr>
 					</table>
 				</div>

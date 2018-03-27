@@ -10,8 +10,8 @@ android {
         applicationId "org.helios.pos.action"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 24
-        versionName "24.0"
+        versionCode 26
+        versionName "26.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -30,4 +30,5 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    compile 'com.google.code.gson:gson:2.8.1'
 }

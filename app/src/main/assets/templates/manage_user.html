@@ -4,7 +4,7 @@
 			<div class="cardHeader">
 				<i class="fa fa-plus iconStyle"
 						style="float: right;"
-						ng-click="openAddUserDialog($event)"></i><a align='center'>{{UI_MANAGE_USER.users}}</a>
+						ng-click="openAddUpdateUserDialog($event,'',-1,0)"></i><a align='center'>{{UI_MANAGE_USER.users}}</a>
 			</div>
 			<div class="cardBody">
 				<div style="position: relative; width: 100%;">
@@ -27,7 +27,7 @@
 								ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
 						</tr>
 						<tr
-							ng-repeat="user in users | orderBy:sortKey:reverse| filter: query" ng-if="user.role.roleId!=6">
+							ng-repeat="user in users | orderBy:sortKey:reverse| filter: query" ng-if="user.role.roleId!=6" ng-click="openAddUpdateUserDialog($event,user,$index,1)">
 							<td>{{user.userId}}</td>
 							<td>{{user.userName}}</td>
 							<td>{{user.role.roleName}}</td>

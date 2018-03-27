@@ -3,7 +3,7 @@
 		<div class="col-sm-12" style="text-align: center;">
 			<div>
 				<div class="statusCircle" style='background-color: {{colors[$index%6]}}'
-					ng-repeat="user in users" ng-if="user.role.roleId!=6 && user.role.roleId!=8 && user.role.roleId!=9">
+					ng-repeat="user in users" ng-if="[CST_COM.roles.admin,CST_COM.roles.substore,CST_COM.roles.vendor,CST_COM.roles.kitchen].indexOf(user.role.roleId)==-1">
 					<div>
 						<span>{{ user.userName }}</span><br> <span>{{getUserTotalAmount(user.userId) | roundup}}</span>
 					</div>
@@ -15,7 +15,7 @@
 		<div class="col-xs-12">
 			<div class="cardStyle">
 				<div class="cardHeader">
-					<i ng-if="user.role.roleId==5" class="fa fa-thumbs-up iconStyle"
+					<i ng-if="user.role.roleId==CST_COM.roles.treasurer" class="fa fa-thumbs-up iconStyle"
 						style="float: right;"
 						ng-click="settleAmount()"></i> <a align='center'>{{UI_DASHBOARD.title}}</a>
 				</div>
@@ -27,7 +27,7 @@
 							<td></td>
 							<td ng-repeat="paymentType in paymentTypes">{{paymentType.paymentTypeName}}</td>
 						</tr>
-						<tr ng-repeat="user in users" ng-if="user.role.roleId!=6 && user.role.roleId!=8 && user.role.roleId!=9">
+						<tr ng-repeat="user in users" ng-if="[CST_COM.roles.admin,CST_COM.roles.substore,CST_COM.roles.vendor,CST_COM.roles.kitchen].indexOf(user.role.roleId)==-1">
 							<td>{{user.userName}} ({{user.role.roleName}})</td>
 							<td ng-repeat="paymentType in paymentTypes">{{getAmount(user.userId,paymentType.paymentTypeId) | roundup}}</td>
 						</tr>

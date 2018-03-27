@@ -1,0 +1,32 @@
+<md-dialog class="dialogStyle">
+      <form ng-cloak>
+		<md-toolbar>
+			<div class="md-toolbar-tools">
+				<div style="position:absolute;right:0px;">
+					<i ng-if="subcategory.subcategoryId!=0" class="fa fa-trash iconStyle" ng-click="deleteI()"></i>
+					<i class="fa fa-share iconStyle" ng-click="answer()"></i>
+				</div>
+				<h2><span ng-if="subcategory.subcategoryId==0">{{SUBCATEGORY_ADD.add_subcat}}</span>
+				<span ng-if="subcategory.subcategoryId!=0">{{SUBCATEGORY_ADD.edit_subcat}}</span></h2>
+			</div>
+		</md-toolbar>		
+		
+		<md-dialog-content class="md-no-momentum" style="padding:20px;">
+			  
+			  <span style="color:red;">{{resMsg}}</span>
+		
+			  <table style="width:100%;" >
+			  	<tr>
+			  		<td>{{SUBCATEGORY_ADD.name}} <span style="color:red;">*</span></td>
+			  		<td><input ng-model="subcategory.subcategoryName" class="form-control"></td>
+			  	</tr>
+			  	<tr>
+			  		<td>{{SUBCATEGORY_ADD.category}} <span style="color:red;">*</span></td>
+			  		<td><select class="form-control" ng-model="subcategory.category" ng-options="category.categoryName for category in details track by category.categoryId">
+                        		<option value="">Select Category</option>
+                        	</select></td>
+			  	</tr>
+			  </table>
+		</md-dialog-content>
+	</form>
+</md-dialog>

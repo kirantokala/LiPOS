@@ -22,6 +22,8 @@ function materialService() {
 	  
 	  var index;
 	  
+	  var storeId;
+	  
 	  matSer.getMaterialOrder = function(){
 		  return materialOrder;
 	  }
@@ -36,6 +38,14 @@ function materialService() {
 	  
 	  matSer.setOrderMaterial = function(newObj){
 		  orderMaterial = newObj;
+	  }
+	  
+	  matSer.getStoreId = function(){
+		  return storeId;
+	  }
+	  
+	  matSer.setStoreId = function(newObj){
+		  storeId = newObj;
 	  }
 	  
 	  matSer.setIndex = function(obj){

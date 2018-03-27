@@ -1,0 +1,45 @@
+<div ng-controller="ProfileController">
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="cardStyle">
+				<div class="cardHeader">
+					<i class="fa fa-share iconStyle" style="float:right;" ng-click="updateProfile()"></i>
+					<a align='center'>{{UI_PROFILE.title}}</a>
+				</div>
+				<div class="cardBody">
+					<br>
+					<span align="center" style="font-weight:bold;color:red;">{{resMsg}}</span>
+					<table align="center" style="border-spacing: 5px;" class="formTable">
+						<tr>
+							<td><span>{{UI_PROFILE.name}} :</span></td>
+							<td><input type="text" class="form-control"
+								ng-model="profile.userName" /></td>
+						</tr>
+						
+						<tr>
+							<td><span>{{UI_PROFILE.phone}} :</span></td>
+							<td><input type="text" class="form-control"
+								ng-model="profile.phone" /></td>
+						</tr>
+						
+						<tr>
+							<td><span>{{UI_PROFILE.location}} :</span></td>
+							<td><input type="text" class="form-control"
+								ng-model="profile.location" /></td>
+						</tr>
+						
+						<tr>
+							<td><span>{{UI_PROFILE.address}} :</span></td>
+							<td><input type="text" class="form-control"
+								ng-model="profile.address" /></td>
+						</tr>
+						<tr>
+							<td colspan="2" style="text-align:center;"><a ng-click="openChangePassDialog($event)" style="cursor:pointer;">CHANGE PASSWORD</a></td>
+						</tr>
+					</table>
+					<br>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
