@@ -7,12 +7,14 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 /**
  * Created by SAI KIRAN on 09-01-2018.
@@ -57,8 +59,18 @@ public class HttpPostRequest extends AsyncTask<String, Void, Void> {
 
             int statusCode = connection.getResponseCode();
             if (statusCode == 200) {
-                InputStreamReader streamReader = new
-                        InputStreamReader(connection.getInputStream());
+                BufferedReader in = new BufferedReader(new InputStreamReader(
+                        connection.getInputStream()));
+
+                StringBuffer response = new StringBuffer();
+
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+
+                // print result
+                System.out.println(response.toString());
             }
             //Connect to our url
             connection.connect();

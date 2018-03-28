@@ -14,6 +14,7 @@ public class ItemOrder {
 	Status status;
 	int direct;
 	int active;
+	int syncStatus;
 
 	public Store getStore() {
 		return store;
@@ -101,6 +102,14 @@ public class ItemOrder {
 
 	public void setDirect(int direct) {
 		this.direct = direct;
+	}
+
+	public int getSyncStatus() {
+		return syncStatus;
+	}
+
+	public void setSyncStatus(int syncStatus) {
+		this.syncStatus = syncStatus;
 	}
 
 	@Override

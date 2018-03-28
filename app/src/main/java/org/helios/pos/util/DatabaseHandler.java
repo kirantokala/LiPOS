@@ -17,7 +17,7 @@ import java.util.List;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
 
     private static final String DATABASE_NAME = "pos";
 
@@ -36,7 +36,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 "  `total_amount` float DEFAULT NULL,\n" +
                 "  `status_id` int(11) NOT NULL DEFAULT '4',\n" +
                 "  `direct` smallint(11) DEFAULT '1',\n" +
-                "  `active` smallint(11) DEFAULT '1'\n" +
+                "  `active` smallint(11) DEFAULT '1',\n" +
+                "  `sync_status` smallint(11) DEFAULT '0'\n" +
                 ")";
 
         db.execSQL(CREATE_ITEM_ORDER_TABLE);
@@ -83,6 +84,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put("store_id", order.getStoreId());
         values.put("order_date", order.getOrderDate());
         values.put("total_amount", order.getTotalAmount());
+        values.put("sync_status", 0);
         if (order.getUser().getRole().getRoleId() == 8) {
             values.put("status_id", 1);
         } else {
@@ -118,9 +120,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public List<ItemOrder> getAllItemOrders() {
+    public List<ItemOrder> getItemOrders() {
         List<ItemOrder> orderList = new ArrayList<ItemOrder>();
-        String selectQuery = "SELECT  * FROM item_order";
+        String selectQuery = "SELECT  * FROM item_order where sync_status=0";
  
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -136,6 +138,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 order.setDirect(Integer.parseInt(cursor.getString(6)));
                 order.setOrderedItems(getOrderedItems(order.getOrderId()));
                 order.setPaymentTypes(getItemPayments(order.getOrderId()));
+                order.setSyncStatus(Integer.parseInt(cursor.getString(8)));
 
                 orderList.add(order);
             } while (cursor.moveToNext());
@@ -182,5 +185,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
         return paymentTypeList;
+    }
+
+    public int dbSyncCount(){
+        int count = 0;
+        String selectQuery = "SELECT * from item_order where sync_status = 0";
+        SQLiteDatabase database = this.getWritableDatabase();
+        Cursor cursor = database.rawQuery(selectQuery,null);
+        count = cursor.getCount();
+        database.close();
+        return count;
+    }
+
+    public void updateSyncStatus(int id, int status){
+        String updateQuery = "update item_order set sync_status = "+status+" where order_id = "+id;
+        SQLiteDatabase database = this.getWritableDatabase();
+        database.execSQL(updateQuery);
+        database.close();
     }
 }

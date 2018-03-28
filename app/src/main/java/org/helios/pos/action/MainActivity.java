@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         stopService();
-        //startService();
+        startService();
 
         mWebView = findViewById(R.id.web_view);
 
@@ -95,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
 
         mWebView.addJavascriptInterface(new WebViewJavaScriptInterface(this), "ANDROID");
         mWebView.setWebViewClient(new WebViewClient());
-
 
         try {
             PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);

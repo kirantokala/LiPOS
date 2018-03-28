@@ -7,6 +7,8 @@ import android.app.Service;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -38,6 +40,8 @@ public class SyncService extends Service {
 
     String baseUrl = "http://18.221.170.127:8080/POS/pos?";
 
+    long syncDelay = 60000;
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -52,12 +56,27 @@ public class SyncService extends Service {
 
             @Override
             public void run() {
-                syncItemOrders();
+                if(hasInternetConnection()){
+                    syncItemOrders();
+                }
                 //testing();
-                ha.postDelayed(this, 10000);
+                ha.postDelayed(this, syncDelay);
             }
-        }, 10000);
+        }, syncDelay);
         return START_STICKY;
+    }
+
+    public boolean hasInternetConnection(){
+        ConnectivityManager ConnectionManager=(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = ConnectionManager.getActiveNetworkInfo();
+        if(networkInfo != null && networkInfo.isConnected()==true )
+        {
+           return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public void testing(){
@@ -67,27 +86,34 @@ public class SyncService extends Service {
 
     private void syncItemOrders(){
         System.out.println("Started syncing item orders");
-        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+        DatabaseHandler controller = new DatabaseHandler(getApplicationContext());
 
         ItemOrderList itemOrderList = new ItemOrderList();
-        List<ItemOrder> orders = db.getAllItemOrders();
+        List<ItemOrder> orders = controller.getItemOrders();
+        if(orders.size()!=0){
+            itemOrderList.setItemOrders(orders);
 
-        itemOrderList.setItemOrders(orders);
+            //String finalStr = "{\"data\":"+new Gson().toJson(itemOrderList)+"}";
 
-        for (ItemOrder cn : orders) {
-            String log = "Id: " + cn.getOrderId() + " ,Store: " + cn.getStoreId() + " , totalAmount: " + cn.getTotalAmount();
-            // Writing Contacts to log
-            Log.d("Name: ", log);
+            /*for (ItemOrder cn : orders) {
+                String log = "Id: " + cn.getOrderId() + " ,Store: " + cn.getStoreId() + " , totalAmount: " + cn.getTotalAmount() + " , sync status :"+ cn.getSyncStatus();
+                // Writing Contacts to log
+                Log.d("Name: ", log);
+            }*/
+
+            String myUrl = baseUrl + "action=placeItemOrders";
+            HttpPostRequest postRequest = null;
+            try {
+                postRequest = new HttpPostRequest(itemOrderList);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            postRequest.execute(myUrl);
+
+            for (ItemOrder cn : orders) {
+                controller.updateSyncStatus(cn.getOrderId(),1);
+            }
         }
-
-        String myUrl = baseUrl + "action=placeItemOrders";
-        HttpPostRequest postRequest = null;
-        try {
-            postRequest = new HttpPostRequest(itemOrderList);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        postRequest.execute(myUrl);
     }
 
     @Override
