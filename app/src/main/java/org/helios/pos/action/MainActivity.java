@@ -76,8 +76,8 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        stopService();
-        startService();
+        //stopService();
+        //startService();
 
         mWebView = findViewById(R.id.web_view);
 

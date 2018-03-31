@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -110,9 +111,13 @@ public class SyncService extends Service {
             }
             postRequest.execute(myUrl);
 
-            for (ItemOrder cn : orders) {
-                controller.updateSyncStatus(cn.getOrderId(),1);
-            }
+            //AsyncTask.Status status = postRequest.getStatus();
+
+            //if(status == AsyncTask.Status.FINISHED){
+                for (ItemOrder cn : orders) {
+                    controller.updateSyncStatus(cn.getOrderId(),1);
+                }
+            //}
         }
     }
 

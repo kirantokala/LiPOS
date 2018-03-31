@@ -33,6 +33,9 @@
 									ng-show="sortKey=='quantityType'"
 									ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
 								</th>
+								<th ng-click="sort('quantity')">{{UI_MATERIAL.quantity}} <span
+									class="glyphicon sort-icon" ng-show="sortKey=='quantity'"
+									ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
 								<th ng-click="sort('pack_cost')">{{UI_MATERIAL.cost}} <span
 									class="glyphicon sort-icon" ng-show="sortKey=='pack_cost'"
 									ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span></th>
@@ -44,6 +47,7 @@
 								<td>{{material.materialName}}</td>
 								<td>{{material.materialCategory.materialCategoryName}}</td>
 								<td>{{material.quantityType.quantityTypeName}}</td>
+								<td>{{material.quantity}}</td>
 								<td>{{material.packCost}}</td>
 							</tr>
 						</table>

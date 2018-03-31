@@ -98,6 +98,9 @@ app.config(function($routeProvider) {
     .when("/manageMenu", {
         templateUrl : "templates/manage_menu.html"
     })
+    .when("/materialUpdate", {
+        templateUrl : "templates/material_update.html"
+    })
     .when("/manageMat", {
         templateUrl : "templates/manage_material.html"
     });

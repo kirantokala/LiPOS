@@ -70,7 +70,7 @@ app.controller("ManageMatController", function ($scope, $http, $mdDialog, $rootS
         });
     };
     
-    function AddController($scope, $filter, $mdDialog, addMaterialService, commonService, singleObjService, UI_MATERIAL) {
+    function AddController($scope, $filter, $mdDialog, $cookieStore, addMaterialService, commonService, singleObjService, UI_MATERIAL) {
     	$scope.MATERIAL_ADD = UI_MATERIAL.material_add;
     	
 		$scope.details = addMaterialService.getDetails();
@@ -89,7 +89,7 @@ app.controller("ManageMatController", function ($scope, $http, $mdDialog, $rootS
   	    
   	    $scope.addMaterial = function(material){
   			$http({
-  		        url : $rootScope.baseUrl+'action=addOrUpdateMaterial',
+  		        url : $rootScope.baseUrl+'action=addOrUpdateMaterial&store_id='+$cookieStore.get("store").storeId,
   		        method : "POST",
   		        data : {data: material},
   		        headers: {

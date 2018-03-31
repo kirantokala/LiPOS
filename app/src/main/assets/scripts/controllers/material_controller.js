@@ -147,7 +147,7 @@ app.controller("MaterialController", function ($scope, $http, $rootScope, $mdDia
     	else{
     		addMaterialService.setMaterialName("");
     	}
-    	$http.get($rootScope.baseUrl+'action=getAddMaterialInfo').success(function(data) {
+    	$http.get($rootScope.baseUrl+'action=getAddMaterialInfo&store_id='+$scope.store.storeId).success(function(data) {
     		addMaterialService.setDetails(data.result);
         	
             $mdDialog.show({
@@ -231,7 +231,7 @@ app.controller("MaterialController", function ($scope, $http, $rootScope, $mdDia
   	    	material.materialType = $scope.materialType;
   	    	material.quantityType = $scope.quantityType;
   	    	material.packCost = $scope.packCost;
-  	    	//material.quantity = $scope.quantity;
+  	    	material.quantity = $scope.quantity;
   	    	$scope.addMaterial(material);
   	    };
   	    

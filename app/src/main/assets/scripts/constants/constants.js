@@ -90,6 +90,7 @@ app.constant('UI_MATERIAL',{
 		mat_category:'Material category',
 		mat_type:'Material Type',
 		quan_type:'Quantity Type',
+		quantity:'Quantity',
 		pack_cost:'Pack cost',
 		sel_mat_category:"Select Material category",
 		sel_mat_type:'Select Material type',

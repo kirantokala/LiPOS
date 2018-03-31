@@ -35,6 +35,22 @@
 			  		<td><input ng-model="item.price" class="form-control"></td>
 			  	</tr>
 			  </table>
+			  <div ng-if="item.itemId!=0 && item.materialList.length!=0">	  	
+			 	<h4>Materials</h4>
+		 		<table style="width:100%" class="table table-bordered">
+		 			<tr>
+		 				<th>Name</th>
+		 				<th>Quantity</th>
+		 			</tr>
+				 	<tr ng-repeat="material in item.materialList">
+						<td>{{material.material.materialName}}</td>
+						<td>{{material.quantity}}</td>
+					</tr>
+		 		</table>
+			 </div><br>
+		  	<div ng-if="item.itemId!=0" style="width:100%;text-align:center;">
+		  		<input type="button" class="btn btn-primary" ng-click="updateMaterials()" value="Update Materials"/>
+		  	</div>
 		</md-dialog-content>
 	</form>
 </md-dialog>

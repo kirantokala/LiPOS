@@ -55,41 +55,71 @@ app.controller("ManageMenuController", function ($scope, $http, $mdDialog, $root
     }
     
     $scope.openAddUpdateItemDialog = function(ev, item, index, add) {
-		addItemService.setDetails($scope.subcategories); 
-		if(add == 1){
-			singleObjService.setObj(angular.copy(item));
-		}
-		else{
-			var item1 = {};
+		addItemService.setDetails($scope.subcategories);     	
+    	if(add==1){
+	    	$http.get($rootScope.baseUrl+'action=getItemMaterialData&item_id='+item.itemId).success(function(data) {
+	    		item.materialList = data.result;
+	    		singleObjService.setObj(angular.copy(item));
+	    		$mdDialog.show({
+	    	          controller: AddUpdateController,
+	    	          templateUrl: 'templates/dialogs/item_edit.html',
+	    	          parent: angular.element(document.body),
+	    	          targetEvent: ev,
+	    	          clickOutsideToClose:true,
+	    	          fullscreen: $scope.customFullscreen // Only for -xs, -sm breakpoints.
+	    	        })
+	    	        
+	    	        .then(function(answer) {
+	    	        	if(add == 0){
+	    	            	if((addItemService.getItem()!=null) && (addItemService.getItem()!=undefined))
+	    	            		$scope.items.push(addItemService.getItem());
+	    	        	}
+	    	        	else{
+	    	        		if((addItemService.getItem()!=null) && (addItemService.getItem()!=undefined)){
+	    	        			if(addItemService.getItem().active == 0){
+	    	        				$scope.items.splice(index, 1);
+	    	        			}
+	    	        			else{
+	    	            			$scope.items[index] = addItemService.getItem();
+	    	        			}
+	    	        		}
+	    	        	}
+	    	        }, function() {
+	    	        });
+	    	});
+    	}
+    	else{
+    		var item1 = {};
 			item1.itemId = 0;
 			singleObjService.setObj(item1);
-		}
-        $mdDialog.show({
-          controller: AddUpdateController,
-          templateUrl: 'templates/dialogs/item_edit.html',
-          parent: angular.element(document.body),
-          targetEvent: ev,
-          clickOutsideToClose:true,
-          fullscreen: $scope.customFullscreen // Only for -xs, -sm breakpoints.
-        })
+    		$mdDialog.show({
+    	          controller: AddUpdateController,
+    	          templateUrl: 'templates/dialogs/item_edit.html',
+    	          parent: angular.element(document.body),
+    	          targetEvent: ev,
+    	          clickOutsideToClose:true,
+    	          fullscreen: $scope.customFullscreen // Only for -xs, -sm breakpoints.
+    	        })
+    	        
+    	        .then(function(answer) {
+    	        	if(add == 0){
+    	            	if((addItemService.getItem()!=null) && (addItemService.getItem()!=undefined))
+    	            		$scope.items.push(addItemService.getItem());
+    	        	}
+    	        	else{
+    	        		if((addItemService.getItem()!=null) && (addItemService.getItem()!=undefined)){
+    	        			if(addItemService.getItem().active == 0){
+    	        				$scope.items.splice(index, 1);
+    	        			}
+    	        			else{
+    	            			$scope.items[index] = addItemService.getItem();
+    	        			}
+    	        		}
+    	        	}
+    	        }, function() {
+    	        });
+    	}
         
-        .then(function(answer) {
-        	if(add == 0){
-            	if((addItemService.getItem()!=null) && (addItemService.getItem()!=undefined))
-            		$scope.items.push(addItemService.getItem());
-        	}
-        	else{
-        		if((addItemService.getItem()!=null) && (addItemService.getItem()!=undefined)){
-        			if(addItemService.getItem().active == 0){
-        				$scope.items.splice(index, 1);
-        			}
-        			else{
-            			$scope.items[index] = addItemService.getItem();
-        			}
-        		}
-        	}
-        }, function() {
-        });
     };
     
     $scope.openAddUpdateSubcategoryDialog = function(ev, subcategory, index, add) {
@@ -130,7 +160,7 @@ app.controller("ManageMenuController", function ($scope, $http, $mdDialog, $root
         });
     };
     
-    function AddUpdateController($scope,$filter,$mdDialog,addItemService,itemService,commonService,singleObjService, UI_MENU) {
+    function AddUpdateController($scope, $filter, $rootScope, $location, $mdDialog, addItemService, itemService, commonService, singleObjService, UI_MENU) {
 		$scope.details = addItemService.getDetails();
 		
 		$scope.item = singleObjService.getObj();
@@ -158,6 +188,10 @@ app.controller("ManageMenuController", function ($scope, $http, $mdDialog, $root
   			    	commonService.ajsToast(response.data.message);
   			    	item = response.data.result;
   		  	    	addItemService.setItem(item);
+  		  	    	if($scope.item.itemId==0){
+		  		  	    $rootScope.item = item;  
+		  	  	    	$location.path('/materialUpdate');
+  		  	    	}
   			    	//$scope.items.push(item);
   		  	    	$mdDialog.hide();
   		    	}
@@ -167,6 +201,12 @@ app.controller("ManageMenuController", function ($scope, $http, $mdDialog, $root
   		    }, function(response) {
   		    });
   		};
+  		
+  		$scope.updateMaterials = function(){
+			$rootScope.item = $scope.item;  
+  	    	$location.path('/materialUpdate');
+  	    	$mdDialog.hide();
+  		}
   		
   		$scope.deleteItem = function(){
 			  $http({
